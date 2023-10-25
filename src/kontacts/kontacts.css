@@ -1,0 +1,102 @@
+.mts {
+  background: url(./img/mts_icon.gif) no-repeat left center;
+  height: 30px;
+  background-size: 30px 30px;
+  padding-left: 40px;
+  line-height: 30px;
+}
+.life {
+  background: url(./img/lifecel_icon.gif) no-repeat left center;
+  height: 30px;
+  background-size: 30px 30px;
+  padding-left: 40px;
+  line-height: 30px;
+}
+.kievstar {
+  background: url(./img/kievstar_ikon.gif) no-repeat left center;
+  height: 30px;
+  background-size: 30px 30px;
+  padding-left: 40px;
+  line-height: 30px;
+}
+.mail {
+  background: url(./img/mail_icon.gif) no-repeat left center;
+  height: 30px;
+  background-size: 30px 30px;
+  padding-left: 40px;
+  line-height: 30px;
+}
+.facebook {
+  background: url(./img/facebook_icon.gif) no-repeat left center;
+  height: 30px;
+  background-size: 30px 30px;
+  padding-left: 40px;
+  line-height: 30px;
+}
+.adm {
+  background: url(./img/adm2.png) no-repeat left center;
+  height: 30px;
+  background-size: 30px 30px;
+  padding-left: 40px;
+  line-height: 30px;
+  display: inline-block;
+}
+
+.admpanel {
+  border-radius: 10px;
+  border: 1px solid grey;
+  padding: 15px;
+  top: 450px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  position: fixed;
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+  z-index: 6;
+}
+.admpanel_active {
+  opacity: 1;
+}
+.admpanel__backfon {
+  display: none;
+  position: fixed;
+  left: -200%;
+  right: -200%;
+  top: -50%;
+  bottom: 0;
+  background: darkslategrey;
+  opacity: 0.5;
+  z-index: 5;
+}
+.admpanel__backfon_active {
+  display: block;
+}
+.admpanel__param {
+  display: inline-block;
+  width: 75px;
+}
+.admpanel__inpblock {
+  margin: 0 0 10px 0;
+}
+.admpanel__inpblockbut {
+  margin-top: 15px;
+  display: flex;
+}
+.admpanel__inp {
+  padding: 1px 10px;
+  border: 1px solid grey;
+  border-radius: 5px;
+  outline: none;
+}
+.admpanel__but {
+  display: inline-block;
+  margin: 0 auto;
+  padding: 2px 17px;
+  width: 100px;
+  border-radius: 10px;
+  border: 1px solid grey;
+}
+.admpanel__but:hover {
+  border: 1px solid rgb(75, 75, 75);
+}

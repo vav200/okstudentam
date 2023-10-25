@@ -1,0 +1,27 @@
+.helper__descr {
+  font-weight: 500;
+  margin-top: 25px;
+}
+.helper__wrap {
+  /* display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  column-gap: 30px; */
+}
+.utubeBlock {
+  margin-top: 10px;
+  margin-bottom: 25px;
+}
+.iframe {
+  display: block;
+  width: 400px;
+  height: 260px;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 440px) {
+  .iframe {
+    width: 280px;
+    height: 180px;
+  }
+}

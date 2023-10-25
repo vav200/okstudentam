@@ -1,0 +1,62 @@
+.footer {
+  margin-top: 30px;
+  background: linear-gradient(#d9d9d9, #f9f9f9, #e4e3e3);
+  padding: 25px 35px 16px 35px;
+  border-top: 5px solid rgb(170, 169, 169);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.footer__title {
+  color: rgb(108, 108, 108);
+  background: url(../header/img/logonew.gif) no-repeat left center;
+  background-size: 40px 40px;
+  padding-left: 55px;
+  height: 40px;
+  line-height: 50px;
+  font-weight: 700;
+}
+.footer__add {
+  color: grey;
+  width: 280px;
+  margin-bottom: 0.7rem;
+}
+.telbox {
+  height: 20px;
+  padding-left: 35px;
+  line-height: 20px;
+}
+.telbox:first-child {
+  background: url(./img/tel_black_icon.png) no-repeat left center;
+  background-size: 21px 20px;
+}
+.mailbox {
+  background: url(./img/mail_black_icon.png) no-repeat left center;
+  background-size: 21px 18px;
+  height: 20px;
+  padding-left: 35px;
+  line-height: 20px;
+}
+.counter {
+  border: 1px solid red;
+  width: 88px;
+  height: 15px;
+  color: black;
+}
+
+@media screen and (max-width: 440px) {
+  .footer {
+    padding: 15px 25px;
+  }
+  .footer__add {
+    color: grey;
+    width: 260px;
+    font-size: 0.85rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .staticinfooter {
+    margin-bottom: 25px;
+  }
+}
