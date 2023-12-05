@@ -3,7 +3,7 @@ import { useState } from "react";
 import "./header.css";
 import { Link, NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from "body-scroll-lock";
+import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 
 function HeaderRU() {
   let dispatch = useDispatch();
@@ -12,6 +12,25 @@ function HeaderRU() {
   let secondlvl = React.createRef();
   const [secondlvlmenustate, setSecondlvlmenustate] = useState(false);
   const [scrollpos, setScrollpos] = useState();
+  const [loginpanel, setLoginpanel] = useState(false);
+
+  function closeadm(e) {
+    e.preventDefault();
+    setLoginpanel((x) => !x);
+    enableBodyScroll(main.current);
+    // dispatch({ type: "INPLOGIN", data: "" });
+    // dispatch({ type: "INPPASSWORD", data: "" });
+  }
+  function enteradm(e) {
+    e.preventDefault();
+    if (true) {
+      setLoginpanel((x) => !x);
+      enableBodyScroll(main.current);
+      // dispatch({ type: "INPLOGIN", data: "" });
+      // dispatch({ type: "INPPASSWORD", data: "" });
+      // nav("/adminpanel");
+    } else return false;
+  }
 
   useEffect(() => {
     function hidemenu() {
@@ -117,7 +136,18 @@ function HeaderRU() {
               </li>
             </ul>
             <div className="langpanel">
-              <span className="langpanel__link langpanel__link_active">RU</span>
+              <div className="switch">
+                <input
+                  type="checkbox"
+                  className="switch__box"
+                  onChange={() => {
+                    dispatch({ type: "SETLANGUAGE", data: "ua" });
+                    dispatch({ type: "orderperehodnull", data: "" });
+                  }}
+                  checked={false}
+                />
+              </div>
+              {/* <span className="langpanel__link langpanel__link_active">RU</span>
               <span className="langpanel__razdel">|</span>
               <span
                 className="langpanel__link"
@@ -128,6 +158,23 @@ function HeaderRU() {
               >
                 UA
               </span>
+              <span className="langpanel__razdel">|</span> */}
+              {/* <span
+                className="langpanel__link"
+                onClick={() => {
+                  dispatch({ type: "SETLANGUAGE", data: "ua" });
+                  dispatch({ type: "orderperehodnull", data: "" });
+                }}
+              >
+                Личный кабинет
+              </span> */}
+              {/* <div
+                className="user"
+                onClick={() => {
+                  disableBodyScroll(main.current);
+                  setLoginpanel("enter");
+                }}
+              ></div> */}
             </div>
           </div>
         </div>
@@ -139,7 +186,145 @@ function HeaderRU() {
         </div>
       </div>
 
-      {/* дроп-меню */}
+      {/* -------------Панель входа ------------------- */}
+
+      <div className={`userpanel__backfon ${loginpanel ? "userpanel__backfon_active" : ""}`}></div>
+      <div className={`userpanel ${loginpanel === "enter" ? "userpanel_active" : ""}`}>
+        <h5 className="">Вход в кабинет</h5>
+        <hr />
+        <form>
+          <div className="userpanel__inpblock">
+            <label>
+              <span className="userpanel__param">e-mail:</span>
+              <input
+                type="text"
+                className="userpanel__inp"
+                onChange={(e) => dispatch({ type: "INPLOGIN", data: e.target.value })}
+                // value={statenow.inplogin}
+              />
+            </label>
+          </div>
+          <div className="userpanel__inpblock last">
+            <label>
+              <span className="userpanel__param">Пароль:</span>
+              <input
+                type="text"
+                className="userpanel__inp"
+                onChange={(e) => dispatch({ type: "INPPASSWORD", data: e.target.value })}
+                // value={statenow.inppassword}
+              />
+            </label>
+          </div>
+          <div className="d-block userpanel__link">Напомнить пароль</div>
+          <div className="userpanel__inpblockbut mt-4">
+            <input type="submit" value="Войти" className="but userpanel__but" onClick={enteradm} />
+          </div>
+          <div
+            className="text-center d-block mt-3 userpanel__link"
+            onClick={() => {
+              setLoginpanel("registration");
+            }}
+          >
+            Зарегистрироваться
+          </div>
+        </form>
+        <div className="drop-menu-close" onClick={closeadm}>
+          <span className="drop-close-line"></span>
+          <span className="drop-close-line"></span>
+        </div>
+      </div>
+
+      <div className={`userpanel ${loginpanel === "registration" ? "userpanel_active" : ""}`}>
+        <h5 className="">Регистрация</h5>
+        <hr />
+        <form>
+          <div className="userpanel__inpblock">
+            <label>
+              <span className="userpanel__param">Имя:</span>
+              <input
+                type="text"
+                className="userpanel__inp"
+                onChange={(e) => dispatch({ type: "USERNAME", data: e.target.value })}
+                // value={statenow.inplogin}
+              />
+            </label>
+          </div>
+          <div className="userpanel__inpblock">
+            <label>
+              <span className="userpanel__param">Фамилия:</span>
+              <input
+                type="text"
+                className="userpanel__inp"
+                onChange={(e) => dispatch({ type: "USERSURNAME", data: e.target.value })}
+                // value={statenow.inplogin}
+              />
+            </label>
+          </div>
+          <div className="userpanel__inpblock">
+            <label>
+              <span className="userpanel__param">Телефон:</span>
+              <input
+                type="text"
+                className="userpanel__inp"
+                onChange={(e) => dispatch({ type: "USERPHONE", data: e.target.value })}
+                // value={statenow.inplogin}
+              />
+            </label>
+          </div>
+          <div className="userpanel__inpblock">
+            <label>
+              <span className="userpanel__param">e-mail:</span>
+              <input
+                type="text"
+                className="userpanel__inp"
+                onChange={(e) => dispatch({ type: "INPLOGIN", data: e.target.value })}
+                // value={statenow.inplogin}
+              />
+            </label>
+          </div>
+          <div className="userpanel__inpblock">
+            <label>
+              <span className="userpanel__param">Пароль:</span>
+              <input
+                type="text"
+                className="userpanel__inp"
+                onChange={(e) => dispatch({ type: "INPPASSWORD", data: e.target.value })}
+                // value={statenow.inppassword}
+              />
+            </label>
+          </div>
+
+          <div className="userpanel__inpblock">
+            <p className="userpanel__smalltext">
+              Регистрируясь, вы соглашаетесь с условиями положения об обработке и защите
+              персональных данных и пользовательским соглашением пользователя
+            </p>
+          </div>
+
+          <div className="userpanel__inpblockbut mt-4">
+            <input
+              type="submit"
+              value="Зарегистрироваться"
+              className="but userpanel__but"
+              onClick={enteradm}
+            />
+          </div>
+          <div
+            className="text-center d-block mt-3 userpanel__link"
+            onClick={() => {
+              setLoginpanel("enter");
+            }}
+          >
+            Я уже зарегестрирован
+          </div>
+        </form>
+        <div className="drop-menu-close" onClick={closeadm}>
+          <span className="drop-close-line"></span>
+          <span className="drop-close-line"></span>
+        </div>
+      </div>
+
+      {/* ----------------Дроп-меню------------------ */}
       <div className={`header__drop-menu ${burgstate ? "header__drop-menu_active" : ""}`}>
         <h3 className="dropmenu__logo">OKstudentam</h3>
         <ul className="header__drop-list">
@@ -206,7 +391,7 @@ function HeaderRU() {
           </li>
           <li className="header__drop-item">
             <div className="langpanel">
-              <span className="langpanel__link langpanel__link_active">RU</span>
+              {/* <span className="langpanel__link langpanel__link_active">RU</span>
               <span className="langpanel__razdel">|</span>
               <span
                 className="langpanel__link"
@@ -217,7 +402,20 @@ function HeaderRU() {
                 }}
               >
                 UA
-              </span>
+              </span> */}
+              <div className="switch">
+                <input
+                  type="checkbox"
+                  className="switch__box"
+                  onChange={() => {
+                    dispatch({ type: "SETLANGUAGE", data: "ua" });
+                    dispatch({ type: "orderperehodnull", data: "" });
+                    enableBodyScroll(main.current);
+                  }}
+                  checked={false}
+                />
+              </div>
+              {/* <div className="user"></div> */}
             </div>
           </li>
         </ul>

@@ -18,6 +18,15 @@ export default function Work117() {
     scrollToTop();
   }, []);
 
+  function sendcount() {
+    const countUrl = "https://okstudentam.com.ua/adpanel/count_downloads.php";
+    fetch(countUrl)
+      .then((data) => data.text())
+      .then((data) => {
+        console.log(data);
+      });
+  }
+
   return (
     <main>
       <Helmet>
@@ -49,6 +58,7 @@ export default function Work117() {
 
       <div className="downloadblock">
         <a
+          onClick={sendcount}
           className="downloadbut text-center"
           href={`https://okstudentam.com.ua/freeworks/${finishedworks[numelmas].key}.rar`}
           download

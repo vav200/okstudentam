@@ -116,7 +116,18 @@ function HeaderUA() {
               </li>
             </ul>
             <div className="langpanel">
-              <span
+              <div className="switch">
+                <input
+                  type="checkbox"
+                  className="switch__box"
+                  onChange={() => {
+                    dispatch({ type: "SETLANGUAGE", data: "ru" });
+                    dispatch({ type: "orderperehodnull", data: "" });
+                  }}
+                  checked={true}
+                />
+              </div>
+              {/* <span
                 className="langpanel__link"
                 onClick={() => {
                   dispatch({ type: "SETLANGUAGE", data: "ru" });
@@ -127,6 +138,17 @@ function HeaderUA() {
               </span>
               <span className="langpanel__razdel">|</span>
               <span className="langpanel__link langpanel__link_active">UA</span>
+              <span className="langpanel__razdel">|</span> */}
+              {/* <span
+                className="langpanel__link"
+                onClick={() => {
+                  dispatch({ type: "SETLANGUAGE", data: "ua" });
+                  dispatch({ type: "orderperehodnull", data: "" });
+                }}
+              >
+                Особистий кабінет
+              </span> */}
+              {/* <div className="user"></div> */}
             </div>
           </div>
         </div>
@@ -205,7 +227,7 @@ function HeaderUA() {
           </li>
           <li className="header__drop-item">
             <div className="langpanel">
-              <span
+              {/* <span
                 className="langpanel__link"
                 onClick={() => {
                   dispatch({ type: "SETLANGUAGE", data: "ru" });
@@ -216,7 +238,20 @@ function HeaderUA() {
                 RU
               </span>
               <span className="langpanel__razdel">|</span>
-              <span className="langpanel__link langpanel__link_active">UA</span>
+              <span className="langpanel__link langpanel__link_active">UA</span> */}
+              <div className="switch">
+                <input
+                  type="checkbox"
+                  className="switch__box"
+                  onChange={() => {
+                    dispatch({ type: "SETLANGUAGE", data: "ru" });
+                    dispatch({ type: "orderperehodnull", data: "" });
+                    enableBodyScroll(main.current);
+                  }}
+                  checked={true}
+                />
+              </div>
+              {/* <div className="user"></div> */}
             </div>
           </li>
         </ul>

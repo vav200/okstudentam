@@ -4,11 +4,11 @@ import "./../finishedworks.css";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
-export default function Work328() {
+export default function Work354() {
   let lang = useSelector((dat) => dat.language);
   let numelmas = "";
   finishedworks.forEach((item, ind) => {
-    if (item.key === "328") numelmas = ind;
+    if (item.key === "354") numelmas = ind;
   });
 
   useEffect(() => {
@@ -17,6 +17,15 @@ export default function Work328() {
     };
     scrollToTop();
   }, []);
+
+  function sendcount() {
+    const countUrl = "https://okstudentam.com.ua/adpanel/count_downloads.php";
+    fetch(countUrl)
+      .then((data) => data.text())
+      .then((data) => {
+        console.log(data);
+      });
+  }
 
   return (
     <main>
@@ -49,6 +58,7 @@ export default function Work328() {
 
       <div className="downloadblock">
         <a
+          onClick={sendcount}
           className="downloadbut text-center"
           href={`https://okstudentam.com.ua/freeworks/${finishedworks[numelmas].key}.rar`}
           download

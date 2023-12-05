@@ -13,6 +13,7 @@ function Kontacts() {
   let main = React.createRef();
   let dispatch = useDispatch();
   let statenow = useSelector((dat) => dat);
+  const [apanelstate, setApanelstate] = useState(false);
 
   function closeadm(e) {
     e.preventDefault();
@@ -32,7 +33,7 @@ function Kontacts() {
       nav("/adminpanel");
     } else return false;
   }
-  const [apanelstate, setApanelstate] = useState(false);
+
   return (
     <main className="position-relative" ref={main}>
       <Helmet>
