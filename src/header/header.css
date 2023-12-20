@@ -329,22 +329,24 @@
   margin: 0;
 }
 .menu__item {
-  margin-right: 30px;
+  margin-right: 24px;
   vertical-align: middle;
 }
 .menu__link {
   font-weight: 500;
   color: #acabab;
   text-decoration: none;
+  font-size: 0.92rem;
 }
 .menu__link:hover {
   color: grey;
-  /* text-decoration: underline; */
+  cursor: pointer;
 }
 .menu__link_active {
   font-weight: 500;
   color: #5f5e5e;
   text-decoration: none;
+  font-size: 0.92rem;
 }
 .langpanel {
   display: inline-block;
@@ -568,13 +570,28 @@
   background: url(./img/user5.gif) no-repeat right bottom;
   background-size: 24px 22px;
 }
+.userexit {
+  display: inline-block;
+  height: 24px;
+  width: 24px;
+  background: url(./img/exit1.gif) no-repeat right bottom;
+  background-size: 24px 22px;
+  margin-left: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.userexit:hover {
+  background: url(./img/exit3.gif) no-repeat right bottom;
+  background-size: 24px 22px;
+  color: #808080;
+}
 
 /* -----------------USERPANEL------------------ */
 
 .userpanel {
   border-radius: 10px;
   border: 1px solid grey;
-  padding: 15px 15px;
+  padding: 17px 17px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -583,6 +600,7 @@
   display: none;
   transition: opacity 0.5s ease-out;
   z-index: 6;
+  width: 300px;
 }
 .userpanel_active {
   display: block;
@@ -602,12 +620,17 @@
   display: block;
 }
 .userpanel__param {
-  display: inline-block;
-  width: 75px;
+  display: block;
+  width: 80px;
+  font-size: 0.85rem;
+}
+.userpanel__text {
+  font-size: 0.85rem;
 }
 .userpanel__inpblock {
-  margin: 0 0 20px 0;
+  margin: 0 0 10px 0;
 }
+
 .userpanel__inpblock.last {
   margin: 0 0 3px 0;
 }
@@ -620,19 +643,24 @@
   border: 1px solid grey;
   border-radius: 5px;
   outline: none;
+  position: relative;
+}
+.userpanel__inp_error {
+  border: 1px solid orange;
 }
 .but.userpanel__but {
   display: inline-block;
   margin: 0 auto;
-  padding: 2px 17px;
-  width: 100px;
+  /* padding: 2px 17px; */
+  /* width: 100px; */
   border-radius: 16px;
   border: 1px solid grey;
+  font-size: 1rem;
   width: 100%;
 }
 .userpanel__link {
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   color: rgb(67, 104, 252);
   text-decoration: underline;
 }
@@ -640,13 +668,18 @@
   color: rgb(53, 3, 253);
 }
 .userpanel__smalltext {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   line-height: 17px;
-  width: 280px;
 }
-/* .but.userpanel__but:hover {
-  border: 1px solid rgb(75, 75, 75);
-} */
+.userpanel__errormess {
+  color: orange;
+  font-size: 0.7rem;
+  display: none;
+  margin-left: 5px;
+}
+.userpanel__errormess_active {
+  display: block;
+}
 
 /* ------------------MEDIA------------------------ */
 

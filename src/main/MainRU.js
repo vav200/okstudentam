@@ -33,6 +33,7 @@ function MainRU() {
   const [typework, setTypework] = useState("");
   const [dateTime, setDateTime] = useState("");
   const [unikalnost, setUnikalnost] = useState("");
+  const [numstr, setNumstr] = useState("");
   const [koments, setKoments] = useState("");
   const [telephone, setTelephone] = useState("");
   const [email, setEmail] = useState("");
@@ -80,6 +81,8 @@ function MainRU() {
       dateTime === "err" ||
       unikalnost === "" ||
       unikalnost === "err" ||
+      numstr === "" ||
+      numstr === "err" ||
       telephone === "" ||
       telephone === "err" ||
       email === "" ||
@@ -92,6 +95,7 @@ function MainRU() {
       if (typework === "" || typework === "err") setTypework("err");
       if (dateTime === "" || dateTime === "err") setDateTime("err");
       if (unikalnost === "" || unikalnost === "err") setUnikalnost("err");
+      if (numstr === "" || numstr === "err") setNumstr("err");
       if (telephone === "" || telephone === "err") setTelephone("err");
       if (email === "" || email === "err") setEmail("err");
     } else {
@@ -102,7 +106,7 @@ function MainRU() {
         //   "content-type": "application/x-www-form-urlencoded",
         // },
         body: dataform,
-        // "theme=" +
+        // "&theme=" +
         // theme +
         // "&subject=" +
         // subject +
@@ -487,6 +491,25 @@ function MainRU() {
         </div>
         <div className="blockform">
           <label>
+            <div className={`labelsecondform ${numstr === "err" ? "labelerror" : ""}`}>
+              * Количество страниц:
+            </div>
+          </label>
+          <textarea
+            type="text"
+            name="numstr"
+            className={`inpsecondform ${numstr === "err" ? "inpsecondform_error" : ""}  `}
+            rows="1"
+            onChange={(e) => {
+              setNumstr(e.target.value);
+              setErrormes("");
+            }}
+            value={numstr === "err" ? "" : numstr}
+            placeholder="по умолчанию шрифт Times New Roman, размер 14 интервал, 1.5"
+          />
+        </div>
+        <div className="blockform">
+          <label>
             <div className="labelsecondform">Комментарии к заказу:</div>
           </label>
           <textarea
@@ -508,11 +531,13 @@ function MainRU() {
               name="addfiles[]"
               className="uploadfile"
               multiple
-              onChange={(e) => setAddfiles(e.target.value)}
-              value={addfiles}
+              onChange={(e) => setAddfiles(Array.from(e.target.files))}
             />
             <div className="but_gray">Файлы к заказу</div>
           </label>
+          <ul className="orders__files-list">
+            {addfiles ? addfiles.map((file, index) => <li key={index}>{file.name}</li>) : ""}
+          </ul>
         </div>
 
         <h5 className="mb-3 mt-4">Данные для связи с Вами:</h5>

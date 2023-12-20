@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import { useNavigate } from "react-router-dom";
 
-function HeaderRU() {
+function Header_user() {
   let nav = useNavigate();
   let lang = useSelector((dat) => dat.language);
   let dispatch = useDispatch();
@@ -19,9 +19,9 @@ function HeaderRU() {
   const [secondlvlmenustate, setSecondlvlmenustate] = useState(false);
   const [scrollpos, setScrollpos] = useState();
   const [loginpanel, setLoginpanel] = useState(false);
-  const errormessage = "заполнять обязательно";
-  const errormesforenter = "заполните поле";
-  const [errormesconfirm, setErrormesconfirm] = useState("заполните поле");
+
+  const [errormes, setErrormes] = useState("");
+
   const [login, setLogin] = useState("");
   const [pass, setPass] = useState("");
   const [username, setUsername] = useState("");
@@ -30,6 +30,7 @@ function HeaderRU() {
   const [usermail, setUsermail] = useState("");
   const [userpass, setUserpass] = useState("");
   const [recallmail, setRecallmail] = useState("");
+  const [recallmailstate, setRecallmailstate] = useState("");
   const [confirmmail, setConfirmmail] = useState("");
   const [dataregistration, setDataregistration] = useState();
 
@@ -44,30 +45,100 @@ function HeaderRU() {
     setUserphone("");
     setUsermail("");
     setRecallmail("");
+    setRecallmailstate("");
   }
 
   function enter(e) {
     let dataform = new FormData(formenter.current);
     e.preventDefault();
+    if (lang === "ru") setErrormes("заполните поле");
+    else setErrormes("заповніть поле");
     if (login === "" || login === "err" || pass === "" || pass === "err") {
       if (login === "" || login === "err") setLogin("err");
       if (pass === "" || pass === "err") setPass("err");
     } else {
+      // for (var pair of dataform.entries()) {
+      //   console.log(pair[0] + ": " + pair[1]);
+      // }
+      fetch("http://okstudentam.ua/users/getUser.php", {
+        method: "POST",
+        body: dataform,
+      })
+        .then((data) => {
+          if (!data.ok) {
+            throw new Error(`Network response was not ok, status: ${data.status}`);
+          }
+          return data.json();
+        })
+        .then((data) => {
+          console.log(data);
+          if (data) {
+            setLoginpanel((x) => !x);
+            enableBodyScroll(main.current);
+            setLogin("");
+            setPass("");
+            dispatch({ type: "USERDATA", data: data });
+            nav("/personal_area");
+          } else {
+            if ((lang = "ru")) setErrormes("неверный логин или пароль");
+            else setErrormes("невірний логін або пароль");
+            setLogin("err");
+            setPass("err");
+          }
+        })
+        .catch((error) => {
+          // Обработка ошибок
+          console.error("Ошибка fetch:", error);
+          setLoginpanel("error_servise");
+        });
     }
   }
 
   function getpass(e) {
     let dataform = new FormData(formrecall.current);
     e.preventDefault();
+    if (lang === "ru") setErrormes("заполните поле");
+    else setErrormes("заповніть поле");
     if (recallmail === "" || recallmail === "err") {
       if (recallmail === "" || recallmail === "err") setRecallmail("err");
     } else {
+      fetch("http://okstudentam.ua/users/getPassword.php", {
+        method: "POST",
+        body: dataform,
+      })
+        .then((data) => {
+          if (!data.ok) {
+            throw new Error(`Network response was not ok, status: ${data.status}`);
+          }
+          return data.text();
+        })
+        .then((data) => {
+          console.log(data);
+          if (data && data !== "none mail") {
+            setRecallmailstate("ok");
+          } else if (data && data === "none mail") {
+            setRecallmailstate("");
+            if (lang === "ru") setErrormes("на эту почту не зарегистрирован аккаунт");
+            else setErrormes("на цю пошту не зареєстрований акаунт");
+            setUsermail("err");
+          } else {
+            setRecallmailstate("");
+            setLoginpanel("error_servise");
+          }
+        })
+        .catch((error) => {
+          // Обработка ошибок
+          console.error("Ошибка fetch:", error);
+          setLoginpanel("error_servise");
+        });
     }
   }
 
   function registration(e) {
     let dataform = new FormData(formreg.current);
     e.preventDefault();
+    if (lang === "ru") setErrormes("заполнять обязательно");
+    else setErrormes("заповнювати обов'язково");
     if (
       username === "" ||
       username === "err" ||
@@ -87,7 +158,9 @@ function HeaderRU() {
       console.log(generpass);
       setUserpass(generpass);
       dataform.append("userpass", generpass);
+      dataform.append("userstate", "customer");
       setDataregistration(dataform);
+
       fetch("http://okstudentam.ua/users/confirmMail.php", {
         method: "POST",
         body: dataform,
@@ -100,8 +173,12 @@ function HeaderRU() {
         })
         .then((data) => {
           console.log(data);
-          if (data) {
+          if (data && data !== "repeat mail") {
             setLoginpanel("confirmmail");
+          } else if (data && data === "repeat mail") {
+            if (lang === "ru") setErrormes("на эту почту уже зарегистрирован аккаунт");
+            else setErrormes("на цю пошту вже зареєстрований акаунт");
+            setUsermail("err");
           } else {
             setLoginpanel("error_servise");
           }
@@ -116,7 +193,8 @@ function HeaderRU() {
 
   function confirm(e) {
     e.preventDefault();
-    setErrormesconfirm("заполните поле");
+    if (lang === "ru") setErrormes("заполните поле");
+    else setErrormes("заповніть поле");
     if (confirmmail === "" || confirmmail === "err") {
       if (confirmmail === "" || confirmmail === "err") setConfirmmail("err");
     } else {
@@ -143,7 +221,8 @@ function HeaderRU() {
               setUserphone("");
               setUsermail("");
               setRecallmail("");
-              nav("/customer_area");
+              dispatch({ type: "USERSTATE", data: "customer" });
+              nav("/personal_area");
             } else {
               setLoginpanel("error_servise");
             }
@@ -154,8 +233,9 @@ function HeaderRU() {
             setLoginpanel("error_servise");
           });
       } else {
+        if ((lang = "ru")) setErrormes("неверный пароль");
+        else setErrormes("невірний пароль");
         setConfirmmail("err");
-        setErrormesconfirm("неверный пароль");
       }
     }
   }
@@ -199,8 +279,9 @@ function HeaderRU() {
               </Link>
             </div>
             <div className="header__textmin">
-              Время работы: c 9-00 до 21-00 <br />
-              Работаем без выходных
+              {lang === "ru" ? "Время работы: c 9-00 до 21-00" : "Час роботи: c 9-00 до 21-00"}
+              <br />
+              {lang === "ru" ? "Работаем без выходных" : "Працюємо без вихідних"}
             </div>
 
             <div className="blocklogobut">
@@ -209,7 +290,7 @@ function HeaderRU() {
                 className="but logo__but"
                 onClick={() => dispatch({ type: "orderperehod", data: "1" })}
               >
-                Заказать работу
+                {lang === "ru" ? "Заказать работу" : "Замовити роботу"}
               </Link>
             </div>
           </div>
@@ -227,7 +308,7 @@ function HeaderRU() {
                   className={({ isActive }) => `${isActive ? "menu__link_active" : "menu__link"}`}
                   onClick={() => dispatch({ type: "orderperehodnull", data: "" })}
                 >
-                  Главная
+                  {lang === "ru" ? "Главная" : "Головна"}
                 </NavLink>
               </li>
               <li className="menu__item">
@@ -235,7 +316,7 @@ function HeaderRU() {
                   to="/finishedworks"
                   className={({ isActive }) => `${isActive ? "menu__link_active" : "menu__link"}`}
                 >
-                  Готовые работы
+                  {lang === "ru" ? "Готовые работы" : "Готові роботи"}
                 </NavLink>
               </li>
               <li className="menu__item">
@@ -243,7 +324,7 @@ function HeaderRU() {
                   to="/guarantees"
                   className={({ isActive }) => `${isActive ? "menu__link_active" : "menu__link"}`}
                 >
-                  Гарантии
+                  {lang === "ru" ? "Гарантии" : "Гарантії"}
                 </NavLink>
               </li>
               <li className="menu__item">
@@ -251,7 +332,7 @@ function HeaderRU() {
                   to="/helper"
                   className={({ isActive }) => `${isActive ? "menu__link_active" : "menu__link"}`}
                 >
-                  Помощь
+                  {lang === "ru" ? "Помощь" : "Допомога"}
                 </NavLink>
               </li>
               <li className="menu__item">
@@ -259,7 +340,7 @@ function HeaderRU() {
                   to="/kontacts"
                   className={({ isActive }) => `${isActive ? "menu__link_active" : "menu__link"}`}
                 >
-                  Контакты
+                  {lang === "ru" ? "Контакты" : "Контакти"}
                 </NavLink>
               </li>
             </ul>
@@ -269,10 +350,12 @@ function HeaderRU() {
                   type="checkbox"
                   className="switch__box"
                   onChange={() => {
-                    dispatch({ type: "SETLANGUAGE", data: "ua" });
+                    lang === "ru"
+                      ? dispatch({ type: "SETLANGUAGE", data: "ua" })
+                      : dispatch({ type: "SETLANGUAGE", data: "ru" });
                     dispatch({ type: "orderperehodnull", data: "" });
                   }}
-                  checked={false}
+                  checked={lang === "ru" ? false : true}
                 />
               </div>
 
@@ -290,7 +373,7 @@ function HeaderRU() {
 
       <div className="header__add-wrap position-relative">
         <div className="header__add">
-          <div className="header__add-name"></div>
+          <div className={lang === "ru" ? "header__add-name" : "header__add-name_ukr"}></div>
         </div>
       </div>
 
@@ -298,13 +381,14 @@ function HeaderRU() {
 
       <div className={`userpanel__backfon ${loginpanel ? "userpanel__backfon_active" : ""}`}></div>
       <div className={`userpanel ${loginpanel === "enter" ? "userpanel_active" : ""}`}>
-        <h5 className="">Вход в кабинет</h5>
+        <h5 className="">{lang === "ru" ? "Вход в кабинет" : "Вхід до кабінету"}</h5>
         <hr />
         <form ref={formenter}>
           <div className="userpanel__inpblock">
             <label>
               <span className="userpanel__param">e-mail:</span>
               <input
+                name="usermail"
                 type="text"
                 className={`userpanel__inp ${login === "err" ? "userpanel__inp_error" : ""}`}
                 onChange={(e) => setLogin(e.target.value)}
@@ -316,13 +400,14 @@ function HeaderRU() {
                 login === "err" ? "userpanel__errormess_active" : ""
               }`}
             >
-              {errormesforenter}
+              {errormes}
             </div>
           </div>
           <div className="userpanel__inpblock last">
             <label>
               <span className="userpanel__param">Пароль:</span>
               <input
+                name="userpass"
                 type="password"
                 className={`userpanel__inp ${pass === "err" ? "userpanel__inp_error" : ""}`}
                 onChange={(e) => setPass(e.target.value)}
@@ -334,7 +419,7 @@ function HeaderRU() {
                 pass === "err" ? "userpanel__errormess_active" : ""
               }`}
             >
-              {errormesforenter}
+              {errormes}
             </div>
           </div>
           <div
@@ -345,7 +430,7 @@ function HeaderRU() {
               setPass("");
             }}
           >
-            Напомнить пароль
+            {lang === "ru" ? "Напомнить пароль" : "Нагадати пароль"}
           </div>
           <div className="userpanel__inpblockbut mt-4">
             <input type="submit" value="Войти" className="but userpanel__but" onClick={enter} />
@@ -358,7 +443,7 @@ function HeaderRU() {
               setPass("");
             }}
           >
-            Зарегистрироваться
+            {lang === "ru" ? "Зарегистрироваться" : "Зареєструватись"}
           </div>
         </form>
         <div className="drop-menu-close" onClick={closeadm}>
@@ -367,13 +452,15 @@ function HeaderRU() {
         </div>
       </div>
 
+      {/* -------------Панель регистрации ------------------- */}
+
       <div className={`userpanel ${loginpanel === "registration" ? "userpanel_active" : ""}`}>
-        <h5 className="">Регистрация</h5>
+        <h5 className="">{lang === "ru" ? "Регистрация" : "Реєстрація"}</h5>
         <hr />
         <form ref={formreg}>
           <div className="userpanel__inpblock">
             <label>
-              <span className="userpanel__param">Имя:</span>
+              <span className="userpanel__param">{lang === "ru" ? "Имя:" : "Ім'я:"}</span>
               <input
                 name="username"
                 type="text"
@@ -387,12 +474,12 @@ function HeaderRU() {
                 username === "err" ? "userpanel__errormess_active" : ""
               }`}
             >
-              {errormessage}
+              {errormes}
             </div>
           </div>
           <div className="userpanel__inpblock">
             <label>
-              <span className="userpanel__param">Фамилия:</span>
+              <span className="userpanel__param">{lang === "ru" ? "Фамилия:" : "Прізвище:"}</span>
               <input
                 name="usersurname"
                 type="text"
@@ -406,7 +493,7 @@ function HeaderRU() {
                 usersurname === "err" ? "userpanel__errormess_active" : ""
               }`}
             >
-              {errormessage}
+              {errormes}
             </div>
           </div>
           <div className="userpanel__inpblock">
@@ -414,7 +501,7 @@ function HeaderRU() {
               <span className="userpanel__param">Телефон:</span>
               <input
                 name="userphone"
-                type="text"
+                type="tel"
                 className={`userpanel__inp ${userphone === "err" ? "userpanel__inp_error" : ""}`}
                 onChange={(e) => setUserphone(e.target.value)}
                 value={userphone === "err" ? "" : userphone}
@@ -425,7 +512,7 @@ function HeaderRU() {
                 userphone === "err" ? "userpanel__errormess_active" : ""
               }`}
             >
-              {errormessage}
+              {errormes}
             </div>
           </div>
           <div className="userpanel__inpblock">
@@ -444,39 +531,22 @@ function HeaderRU() {
                 usermail === "err" ? "userpanel__errormess_active" : ""
               }`}
             >
-              {errormessage}
+              {errormes}
             </div>
           </div>
-          {/* <div className="userpanel__inpblock">
-            <label>
-              <span className="userpanel__param">Пароль:</span>
-              <input
-                type="password"
-                className={`userpanel__inp ${userpass === "err" ? "userpanel__inp_error" : ""}`}
-                onChange={(e) => setUserpass(e.target.value)}
-                value={userpass === "err" ? "" : userpass}
-              />
-            </label>
-            <div
-              className={`userpanel__errormess ${
-                userpass === "err" ? "userpanel__errormess_active" : ""
-              }`}
-            >
-              {errormessage}
-            </div>
-          </div> */}
 
           <div className="userpanel__inpblock">
             <p className="userpanel__smalltext">
-              Регистрируясь, вы соглашаетесь с условиями положения об обработке и защите
-              персональных данных и пользовательским соглашением пользователя
+              {lang === "ru"
+                ? "Регистрируясь, вы соглашаетесь с условиями положения об обработке и защите персональных данных и пользовательским соглашением пользователя"
+                : "Реєструючись, ви погоджуєтесь з умовами положення про обробку та захист персональних даних та користувальницькою угодою користувача"}
             </p>
           </div>
 
           <div className="userpanel__inpblockbut mt-4">
             <input
               type="submit"
-              value="Зарегистрироваться"
+              value={lang === "ru" ? "Зарегистрироваться" : "Зареєструватись"}
               className="but userpanel__but"
               onClick={registration}
             />
@@ -491,7 +561,7 @@ function HeaderRU() {
               setUsermail("");
             }}
           >
-            Я уже зарегестрирован
+            {lang === "ru" ? "Я уже зарегестрирован" : "Я вже зареєстрований"}
           </div>
         </form>
         <div className="drop-menu-close" onClick={closeadm}>
@@ -500,14 +570,17 @@ function HeaderRU() {
         </div>
       </div>
 
+      {/* -------------Восстановление пароля ------------------- */}
+
       <div className={`userpanel ${loginpanel === "recallpass" ? "userpanel_active" : ""}`}>
-        <h5 className="">Восстановление пароля</h5>
+        <h5 className="">{lang === "ru" ? "Восстановление пароля" : "Відновлення паролю"}</h5>
         <hr />
-        <form ref={formrecall}>
+        <form ref={formrecall} className={`${recallmailstate ? "d-none" : "d-block"}`}>
           <div className="userpanel__inpblock">
             <label>
               <span className="userpanel__param">e-mail:</span>
               <input
+                name="usermail"
                 type="text"
                 className={`userpanel__inp ${recallmail === "err" ? "userpanel__inp_error" : ""}`}
                 onChange={(e) => setRecallmail(e.target.value)}
@@ -519,13 +592,14 @@ function HeaderRU() {
                 recallmail === "err" ? "userpanel__errormess_active" : ""
               }`}
             >
-              {errormesforenter}
+              {errormes}
             </div>
           </div>
+
           <div className="userpanel__inpblockbut mt-4">
             <input
               type="submit"
-              value="Выслать пароль"
+              value={lang === "ru" ? "Выслать пароль" : "Надіслати пароль"}
               className="but userpanel__but"
               onClick={getpass}
             />
@@ -537,21 +611,30 @@ function HeaderRU() {
               setRecallmail("");
             }}
           >
-            Вспомнил пароль
+            {lang === "ru" ? "Вспомнил пароль" : "Згадав пароль"}
           </div>
         </form>
+        <span className={`userpanel__text ${recallmailstate ? "d-block" : "d-none"}`}>
+          {lang === "ru"
+            ? "Ваш пароль успешно отправлен на указанную почту"
+            : "Ваш пароль успішно надіслано на вказану пошту"}
+        </span>
         <div className="drop-menu-close" onClick={closeadm}>
           <span className="drop-close-line"></span>
           <span className="drop-close-line"></span>
         </div>
       </div>
 
+      {/* -------------Подтверждение почты ------------------- */}
+
       <div className={`userpanel ${loginpanel === "confirmmail" ? "userpanel_active" : ""}`}>
-        <h5 className="">Ввод пароля</h5>
+        <h5 className="">{lang === "ru" ? "Ввод пароля" : "Введення пароля"}</h5>
         <hr />
         <div className="userpanel__inpblock">
           <p className="userpanel__smalltext">
-            Введите пароль из сообщения отправленного на почту указанную при регистрации
+            {lang === "ru"
+              ? "Введите пароль из сообщения отправленного на почту указанную при регистрации"
+              : "Введіть пароль із повідомлення надісланого на пошту, вказану під час реєстрації"}
           </p>
         </div>
         <div className="userpanel__inpblock">
@@ -569,7 +652,7 @@ function HeaderRU() {
               confirmmail === "err" ? "userpanel__errormess_active" : ""
             }`}
           >
-            {errormesconfirm}
+            {errormes}
           </div>
         </div>
         <div className="userpanel__inpblockbut mt-4">
@@ -587,11 +670,13 @@ function HeaderRU() {
       </div>
 
       <div className={`userpanel ${loginpanel === "error_servise" ? "userpanel_active" : ""}`}>
-        <h5 className="">Ошибка</h5>
+        <h5 className="">{lang === "ru" ? "Ошибка" : "Помилка"}</h5>
         <hr />
         <div className="userpanel__inpblock">
           <p className="userpanel__smalltext">
-            Возникла непредвиденная ошибка. Обратитесь к администрации сервиса
+            {lang === "ru"
+              ? "Возникла непредвиденная ошибка. Обратитесь к администрации сервиса"
+              : "Виникла непередбачена помилка. Зверніться до адміністрації сервісу"}
           </p>
         </div>
 
@@ -615,7 +700,7 @@ function HeaderRU() {
                 dispatch({ type: "orderperehodnull", data: "" });
               }}
             >
-              Главная
+              {lang === "ru" ? "Главная" : "Головна"}
             </Link>
           </li>
           <li className="header__drop-item">
@@ -627,7 +712,7 @@ function HeaderRU() {
                 enableBodyScroll(main.current);
               }}
             >
-              Готовые работы
+              {lang === "ru" ? "Готовые работы" : "Готові роботи"}
             </Link>
           </li>
           <li className="header__drop-item">
@@ -639,7 +724,7 @@ function HeaderRU() {
                 enableBodyScroll(main.current);
               }}
             >
-              Гарантии
+              {lang === "ru" ? "Гарантии" : "Гарантії"}
             </Link>
           </li>
           <li className="header__drop-item">
@@ -651,7 +736,7 @@ function HeaderRU() {
                 enableBodyScroll(main.current);
               }}
             >
-              Помощь
+              {lang === "ru" ? "Помощь" : "Допомога"}
             </Link>
           </li>
           <li className="header__drop-item">
@@ -663,36 +748,33 @@ function HeaderRU() {
                 enableBodyScroll(main.current);
               }}
             >
-              Контакты
+              {lang === "ru" ? "Контакты" : "Контакти"}
             </Link>
           </li>
           <li className="header__drop-item">
             <div className="langpanel">
-              {/* <span className="langpanel__link langpanel__link_active">RU</span>
-              <span className="langpanel__razdel">|</span>
-              <span
-                className="langpanel__link"
-                onClick={() => {
-                  dispatch({ type: "SETLANGUAGE", data: "ua" });
-                  dispatch({ type: "orderperehodnull", data: "" });
-                  enableBodyScroll(main.current);
-                }}
-              >
-                UA
-              </span> */}
               <div className="switch">
                 <input
                   type="checkbox"
                   className="switch__box"
                   onChange={() => {
-                    dispatch({ type: "SETLANGUAGE", data: "ua" });
+                    lang === "ru"
+                      ? dispatch({ type: "SETLANGUAGE", data: "ua" })
+                      : dispatch({ type: "SETLANGUAGE", data: "ru" });
                     dispatch({ type: "orderperehodnull", data: "" });
                     enableBodyScroll(main.current);
                   }}
-                  checked={false}
+                  checked={lang === "ru" ? false : true}
                 />
               </div>
-              {/* <div className="user"></div> */}
+              <div
+                className="user"
+                onClick={() => {
+                  disableBodyScroll(main.current);
+                  setLoginpanel("enter");
+                  setBurgstate(false);
+                }}
+              ></div>
             </div>
           </li>
         </ul>
@@ -706,13 +788,14 @@ function HeaderRU() {
               dispatch({ type: "orderperehod", data: "1" });
             }}
           >
-            Заказать работу
+            {lang === "ru" ? "Заказать работу" : "Замовити роботу"}
           </Link>
         </div>
 
         <div className="header__textmin_dropmenu">
-          Время работы: c 10-00 до 18-00 <br />
-          Выходной: суббота, воскресенье
+          {lang === "ru" ? "Время работы: c 9-00 до 21-00" : "Час роботи: c 9-00 до 21-00"}
+          <br />
+          {lang === "ru" ? "Работаем без выходных" : "Працюємо без вихідних"}
         </div>
 
         <div
@@ -730,4 +813,4 @@ function HeaderRU() {
   );
 }
 
-export default HeaderRU;
+export default Header_user;

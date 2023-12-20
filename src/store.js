@@ -7,9 +7,13 @@ let defaultstate = {
   adminpanel: false,
   inplogin: "",
   inppassword: "",
+  userstate: "",
+  usermail: "",
+  username: "",
   keyfreework: "1",
   elmasfreework: "",
   orderperehod: "",
+  dispetcher_list: "forEvaluation",
   changeuserright: function () {
     if (this.inplogin === this.login && this.inppassword === this.password) this.adminpanel = true;
     else this.adminpanel = false;
@@ -34,6 +38,17 @@ function reducer(state = defaultstate, action) {
       return { ...state, orderperehod: state.orderperehod + action.data };
     case "orderperehodnull":
       return { ...state, orderperehod: action.data };
+    case "USERSTATE":
+      return { ...state, userstate: action.data };
+    case "USERDATA":
+      return {
+        ...state,
+        userstate: action.data.userstate,
+        usermail: action.data.usermail,
+        username: action.data.username,
+      };
+    case "SETDISPETCHERLIST":
+      return { ...state, dispetcher_list: action.data };
     default:
       return state;
   }

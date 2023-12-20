@@ -100,10 +100,18 @@ export default function Navpages(props) {
             10
           </NavLink>
         </li>
+        <li className="listpages__item" key="p11">
+          <NavLink
+            to="/finishedworks/page11"
+            className={`${props.numpage === 11 ? "listpages__link_active" : "listpages__link"}`}
+          >
+            11
+          </NavLink>
+        </li>
         <li
           key="next"
           className={`listpages__item listpages__item_last ${
-            props.numpage === 10 ? "listpages__item_disabled" : ""
+            props.numpage === 11 ? "listpages__item_disabled" : ""
           }`}
         >
           <NavLink

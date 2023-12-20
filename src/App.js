@@ -3,6 +3,8 @@ import React, { useEffect, useState, Suspense } from "react";
 import Header from "./header/Header";
 import Footer from "./footer/Footer";
 import Main from "./main/Main";
+import Personal_area from "./users/Personal_area";
+
 import Finishedworks from "./finishedworks/Finishedworks";
 import Page1 from "./finishedworks/lists/Page1";
 import Page2 from "./finishedworks/lists/Page2";
@@ -14,6 +16,7 @@ import Page7 from "./finishedworks/lists/Page7";
 import Page8 from "./finishedworks/lists/Page8";
 import Page9 from "./finishedworks/lists/Page9";
 import Page10 from "./finishedworks/lists/Page10";
+import Page11 from "./finishedworks/lists/Page11";
 
 import Helper from "./helper/Helper";
 import Guarantees from "./guarantees/Guarantees";
@@ -296,6 +299,34 @@ import Work372 from "./finishedworks/freeworks/Work372";
 import Work373 from "./finishedworks/freeworks/Work373";
 import Work374 from "./finishedworks/freeworks/Work374";
 import Work375 from "./finishedworks/freeworks/Work375";
+import Work376 from "./finishedworks/freeworks/Work376";
+import Work377 from "./finishedworks/freeworks/Work377";
+import Work378 from "./finishedworks/freeworks/Work378";
+import Work379 from "./finishedworks/freeworks/Work379";
+import Work380 from "./finishedworks/freeworks/Work380";
+import Work381 from "./finishedworks/freeworks/Work381";
+import Work382 from "./finishedworks/freeworks/Work382";
+import Work383 from "./finishedworks/freeworks/Work383";
+import Work384 from "./finishedworks/freeworks/Work384";
+import Work385 from "./finishedworks/freeworks/Work385";
+import Work386 from "./finishedworks/freeworks/Work386";
+import Work387 from "./finishedworks/freeworks/Work387";
+import Work388 from "./finishedworks/freeworks/Work388";
+import Work389 from "./finishedworks/freeworks/Work389";
+import Work390 from "./finishedworks/freeworks/Work390";
+import Work391 from "./finishedworks/freeworks/Work391";
+import Work392 from "./finishedworks/freeworks/Work392";
+import Work393 from "./finishedworks/freeworks/Work393";
+import Work394 from "./finishedworks/freeworks/Work394";
+import Work395 from "./finishedworks/freeworks/Work395";
+import Work396 from "./finishedworks/freeworks/Work396";
+import Work397 from "./finishedworks/freeworks/Work397";
+import Work398 from "./finishedworks/freeworks/Work398";
+import Work399 from "./finishedworks/freeworks/Work399";
+import Work400 from "./finishedworks/freeworks/Work400";
+import Work401 from "./finishedworks/freeworks/Work401";
+import Work402 from "./finishedworks/freeworks/Work402";
+import Work403 from "./finishedworks/freeworks/Work403";
 
 import { BrowserRouter, Routes, Route, HashRouter } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -329,6 +360,7 @@ function App() {
                 <Route path="page8" element={<Page8 />} />
                 <Route path="page9" element={<Page9 />} />
                 <Route path="page10" element={<Page10 />} />
+                <Route path="page11" element={<Page11 />} />
 
                 <Route path="101" element={<Work101 />} />
                 <Route path="102" element={<Work102 />} />
@@ -605,11 +637,43 @@ function App() {
                 <Route path="373" element={<Work373 />} />
                 <Route path="374" element={<Work374 />} />
                 <Route path="375" element={<Work375 />} />
+                <Route path="376" element={<Work376 />} />
+                <Route path="377" element={<Work377 />} />
+                <Route path="378" element={<Work378 />} />
+                <Route path="379" element={<Work379 />} />
+                <Route path="380" element={<Work380 />} />
+                <Route path="381" element={<Work381 />} />
+                <Route path="382" element={<Work382 />} />
+                <Route path="383" element={<Work383 />} />
+                <Route path="384" element={<Work384 />} />
+                <Route path="385" element={<Work385 />} />
+                <Route path="386" element={<Work386 />} />
+                <Route path="387" element={<Work387 />} />
+                <Route path="388" element={<Work388 />} />
+                <Route path="389" element={<Work389 />} />
+                <Route path="390" element={<Work390 />} />
+                <Route path="391" element={<Work391 />} />
+                <Route path="392" element={<Work392 />} />
+                <Route path="393" element={<Work393 />} />
+                <Route path="394" element={<Work394 />} />
+                <Route path="395" element={<Work395 />} />
+                <Route path="396" element={<Work396 />} />
+                <Route path="397" element={<Work397 />} />
+                <Route path="398" element={<Work398 />} />
+                <Route path="399" element={<Work399 />} />
+                <Route path="400" element={<Work400 />} />
+                <Route path="401" element={<Work401 />} />
+                <Route path="402" element={<Work402 />} />
+                <Route path="403" element={<Work403 />} />
               </Route>
 
               <Route
                 path="/adminpanel"
                 element={statenow.adminpanel ? <Addfreeworks /> : <Navigate to="/" />}
+              />
+              <Route
+                path="/personal_area"
+                element={statenow.userstate !== "" ? <Personal_area /> : <Navigate to="/" />}
               />
               {/* <Route path={`/finishedworks/${keyfreework}`} element={<Outworks />} /> */}
             </Routes>

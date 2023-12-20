@@ -497,11 +497,13 @@ function MainUA() {
               name="addfiles[]"
               className="uploadfile"
               multiple
-              onChange={(e) => setAddfiles(e.target.value)}
-              value={addfiles}
+              onChange={(e) => setAddfiles(Array.from(e.target.files))}
             />
             <div className="but_gray">Файли до замовлення</div>
           </label>
+          <ul className="orders__files-list">
+            {addfiles ? addfiles.map((file, index) => <li key={index}>{file.name}</li>) : ""}
+          </ul>
         </div>
 
         <h5 className="mb-3 mt-4">Дані для зв'язку з Вами:</h5>
