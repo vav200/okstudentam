@@ -60,6 +60,11 @@
 .orders__box:hover {
   cursor: pointer;
 }
+.orders__box_num {
+  font-weight: 700;
+  padding-right: 5px;
+  font-size: 1.07rem;
+}
 .orders__list-secondlvl {
   margin: 0px;
   padding: 5px 0 0 5px;
@@ -155,6 +160,12 @@
   cursor: pointer;
   background: url(../users/img/arrow2.png) no-repeat left center;
 }
+.selectedOrder_num {
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding-right: 7px;
+  padding-left: 5px;
+}
 .orders__files-list {
   margin: 0px;
   padding: 5px 0 0 15px;
@@ -164,4 +175,18 @@
   padding: 0px;
   font-size: 0.8rem;
   list-style: none;
+}
+.selectedOrder_newmess {
+  display: inline-block;
+  width: 24px;
+  height: 20px;
+  background: url(../users/img/mess2.png) no-repeat right top;
+  opacity: 0.5;
+}
+.selectedOrder_newfile {
+  display: inline-block;
+  width: 24px;
+  height: 20px;
+  background: url(../users/img/file1.png) no-repeat right top;
+  opacity: 0.5;
 }

@@ -17,9 +17,11 @@ function MainUA() {
   const [selectedDate, setSelectedDate] = useState(null);
 
   let perehod = useSelector((dat) => dat.orderperehod);
+  let domen = useSelector((dat) => dat.domen);
   let formmail = React.createRef();
   let main = React.createRef();
   let titleform = React.createRef();
+
   const [themeR, setThemeR] = useState("history");
   const [typeofWorkR, setTypeofWorkR] = useState("referat");
   const [timeLimitR, setTimeLimitR] = useState("1");
@@ -32,6 +34,7 @@ function MainUA() {
   const [typework, setTypework] = useState("");
   const [dateTime, setDateTime] = useState("");
   const [unikalnost, setUnikalnost] = useState("");
+  const [numstr, setNumstr] = useState("");
   const [koments, setKoments] = useState("");
   const [telephone, setTelephone] = useState("");
   const [email, setEmail] = useState("");
@@ -79,6 +82,8 @@ function MainUA() {
       dateTime === "err" ||
       unikalnost === "" ||
       unikalnost === "err" ||
+      numstr === "" ||
+      numstr === "err" ||
       telephone === "" ||
       telephone === "err" ||
       email === "" ||
@@ -91,11 +96,13 @@ function MainUA() {
       if (typework === "" || typework === "err") setTypework("err");
       if (dateTime === "" || dateTime === "err") setDateTime("err");
       if (unikalnost === "" || unikalnost === "err") setUnikalnost("err");
+      if (numstr === "" || numstr === "err") setNumstr("err");
       if (telephone === "" || telephone === "err") setTelephone("err");
       if (email === "" || email === "err") setEmail("err");
     } else {
       disableBodyScroll(main.current);
-      fetch("https://okstudentam.com.ua/mailerphp/send.php", {
+      let url = domen + "/mailerphp/send.php";
+      fetch(url, {
         method: "POST",
         // headers: {
         //   "content-type": "application/x-www-form-urlencoded",
@@ -135,6 +142,7 @@ function MainUA() {
           setTypework("");
           setDateTime("");
           setUnikalnost("");
+          setNumstr("");
           setKoments("");
           setTelephone("");
           setEmail("");
@@ -467,11 +475,32 @@ function MainUA() {
             className={`inpsecondform ${unikalnost === "err" ? "inpsecondform_error" : ""}  `}
             rows="1"
             onChange={(e) => {
+              validNum(e);
               setUnikalnost(e.target.value);
               setErrormes("");
             }}
             value={unikalnost === "err" ? "" : unikalnost}
             placeholder="система перевірки унікальності (повна назва) та %"
+          />
+        </div>
+        <div className="blockform">
+          <label>
+            <div className={`labelsecondform ${numstr === "err" ? "labelerror" : ""}`}>
+              * Кількість сторінок:
+            </div>
+          </label>
+          <textarea
+            type="text"
+            name="numstr"
+            className={`inpsecondform ${numstr === "err" ? "inpsecondform_error" : ""}  `}
+            rows="1"
+            onChange={(e) => {
+              validNum(e);
+              setNumstr(e.target.value);
+              setErrormes("");
+            }}
+            value={numstr === "err" ? "" : numstr}
+            placeholder="за промовчанням шрифт Times New Roman, розмір 14 інтервал, 1.5"
           />
         </div>
         <div className="blockform">

@@ -5,10 +5,12 @@ import { Link, NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
-function Header_customer() {
+function HeaderDispetcher() {
   let nav = useNavigate();
   let lang = useSelector((dat) => dat.language);
+  let dispetcher_list = useSelector((dat) => dat.dispetcher_list);
   let dispatch = useDispatch();
   const [burgstate, setBurgstate] = useState(false);
   let main = React.createRef();
@@ -56,21 +58,6 @@ function Header_customer() {
                 <h3 className="header__logo">OKstudentam</h3>
               </Link>
             </div>
-            <div className="header__textmin">
-              {lang === "ru" ? "Время работы: c 9-00 до 21-00" : "Час роботи: c 9-00 до 21-00"}
-              <br />
-              {lang === "ru" ? "Работаем без выходных" : "Працюємо без вихідних"}
-            </div>
-
-            {/* <div className="blocklogobut">
-              <Link
-                to="/"
-                className="but logo__but"
-                onClick={() => dispatch({ type: "orderperehod", data: "1" })}
-              >
-                {lang === "ru" ? "Заказать работу" : "Замовити роботу"}
-              </Link>
-            </div> */}
           </div>
 
           <div
@@ -80,54 +67,29 @@ function Header_customer() {
             ref={secondlvl}
           >
             <ul className="header__menu">
-              <li className="menu__item">
-                <NavLink
-                  to="/"
-                  className={({ isActive }) => `${isActive ? "menu__link_active" : "menu__link"}`}
-                  onClick={() => dispatch({ type: "orderperehodnull", data: "" })}
-                >
-                  {lang === "ru" ? "Главная" : "Головна"}
-                </NavLink>
+              <li
+                className={`menu__item menu__link ${
+                  dispetcher_list === "forEvaluation" ? "menu__link_active" : ""
+                }`}
+                onClick={() => dispatch({ type: "SETDISPETCHERLIST", data: "forEvaluation" })}
+              >
+                {lang === "ru" ? "Ожидают оценки" : "Чекають на оцінку"}
               </li>
-              <li className="menu__item">
-                <NavLink
-                  to="/finishedworks"
-                  className={({ isActive }) => `${isActive ? "menu__link_active" : "menu__link"}`}
-                >
-                  {lang === "ru" ? "Готовые работы" : "Готові роботи"}
-                </NavLink>
+              <li
+                className={`menu__item menu__link ${
+                  dispetcher_list === "atWork" ? "menu__link_active" : ""
+                }`}
+                onClick={() => dispatch({ type: "SETDISPETCHERLIST", data: "atWork" })}
+              >
+                {lang === "ru" ? "В работе" : "В роботі"}
               </li>
-              <li className="menu__item">
-                <NavLink
-                  to="/guarantees"
-                  className={({ isActive }) => `${isActive ? "menu__link_active" : "menu__link"}`}
-                >
-                  {lang === "ru" ? "Гарантии" : "Гарантії"}
-                </NavLink>
-              </li>
-              <li className="menu__item">
-                <NavLink
-                  to="/helper"
-                  className={({ isActive }) => `${isActive ? "menu__link_active" : "menu__link"}`}
-                >
-                  {lang === "ru" ? "Помощь" : "Допомога"}
-                </NavLink>
-              </li>
-              <li className="menu__item">
-                <NavLink
-                  to="/kontacts"
-                  className={({ isActive }) => `${isActive ? "menu__link_active" : "menu__link"}`}
-                >
-                  {lang === "ru" ? "Контакты" : "Контакти"}
-                </NavLink>
-              </li>
-              <li className="menu__item">
-                <NavLink
-                  to="/personal_area"
-                  className={({ isActive }) => `${isActive ? "menu__link_active" : "menu__link"}`}
-                >
-                  {lang === "ru" ? "Кабинет заказчика" : "Кабінет замовника"}
-                </NavLink>
+              <li
+                className={`menu__item menu__link ${
+                  dispetcher_list === "done" ? "menu__link_active" : ""
+                }`}
+                onClick={() => dispatch({ type: "SETDISPETCHERLIST", data: "done" })}
+              >
+                {lang === "ru" ? "Выполненные" : "Виконані"}
               </li>
             </ul>
             <div className="langpanel">
@@ -149,7 +111,15 @@ function Header_customer() {
                 className="userexit"
                 onClick={() => {
                   nav("/");
-                  dispatch({ type: "USERSTATE", data: "" });
+                  dispatch({
+                    type: "USERDATA",
+                    data: { username: "", userstate: "", usermail: "" },
+                  });
+                  // Удаление куки для каждого параметра входа
+                  Cookies.remove("usermail");
+                  Cookies.remove("username");
+                  Cookies.remove("userstate");
+                  Cookies.remove("dispetcher_list");
                 }}
               ></div>
             </div>
@@ -161,67 +131,46 @@ function Header_customer() {
       <div className={`header__drop-menu ${burgstate ? "header__drop-menu_active" : ""}`}>
         <h3 className="dropmenu__logo">OKstudentam</h3>
         <ul className="header__drop-list">
-          <li className="header__drop-item">
-            <Link
-              to="/"
-              className="header__drop-link"
-              onClick={() => {
-                setBurgstate((x) => !x);
-                enableBodyScroll(main.current);
-                dispatch({ type: "orderperehodnull", data: "" });
-              }}
-            >
-              {lang === "ru" ? "Главная" : "Головна"}
-            </Link>
+          <li
+            className={`menu__item menu__link ${
+              dispetcher_list === "forEvaluation" ? "menu__link_active" : ""
+            }`}
+            onClick={() => {
+              dispatch({ type: "SETDISPETCHERLIST", data: "forEvaluation" });
+              setBurgstate((x) => !x);
+              enableBodyScroll(main.current);
+              dispatch({ type: "orderperehodnull", data: "" });
+            }}
+          >
+            {lang === "ru" ? "Ожидают оценки" : "Чекають на оцінку"}
           </li>
-          <li className="header__drop-item">
-            <Link
-              to="/finishedworks"
-              className="header__drop-link"
-              onClick={() => {
-                setBurgstate((x) => !x);
-                enableBodyScroll(main.current);
-              }}
-            >
-              {lang === "ru" ? "Готовые работы" : "Готові роботи"}
-            </Link>
+          <li
+            className={`menu__item menu__link ${
+              dispetcher_list === "atWork" ? "menu__link_active" : ""
+            }`}
+            onClick={() => {
+              dispatch({ type: "SETDISPETCHERLIST", data: "atWork" });
+              setBurgstate((x) => !x);
+              enableBodyScroll(main.current);
+              dispatch({ type: "orderperehodnull", data: "" });
+            }}
+          >
+            {lang === "ru" ? "В работе" : "В роботі"}
           </li>
-          <li className="header__drop-item">
-            <Link
-              to="/guarantees"
-              className="header__drop-link"
-              onClick={() => {
-                setBurgstate((x) => !x);
-                enableBodyScroll(main.current);
-              }}
-            >
-              {lang === "ru" ? "Гарантии" : "Гарантії"}
-            </Link>
+          <li
+            className={`menu__item menu__link ${
+              dispetcher_list === "done" ? "menu__link_active" : ""
+            }`}
+            onClick={() => {
+              dispatch({ type: "SETDISPETCHERLIST", data: "done" });
+              setBurgstate((x) => !x);
+              enableBodyScroll(main.current);
+              dispatch({ type: "orderperehodnull", data: "" });
+            }}
+          >
+            {lang === "ru" ? "Выполненные" : "Виконані"}
           </li>
-          <li className="header__drop-item">
-            <Link
-              to="/helper"
-              className="header__drop-link"
-              onClick={() => {
-                setBurgstate((x) => !x);
-                enableBodyScroll(main.current);
-              }}
-            >
-              {lang === "ru" ? "Помощь" : "Допомога"}
-            </Link>
-          </li>
-          <li className="header__drop-item">
-            <Link
-              to="/kontacts"
-              className="header__drop-link"
-              onClick={() => {
-                setBurgstate((x) => !x);
-                enableBodyScroll(main.current);
-              }}
-            >
-              {lang === "ru" ? "Контакты" : "Контакти"}
-            </Link>
-          </li>
+
           <li className="header__drop-item">
             <div className="langpanel">
               <div className="switch">
@@ -242,8 +191,16 @@ function Header_customer() {
                 className="userexit"
                 onClick={() => {
                   nav("/");
-                  dispatch({ type: "USERSTATE", data: "" });
+                  dispatch({
+                    type: "USERDATA",
+                    data: { username: "", userstate: "", usermail: "" },
+                  });
                   setBurgstate(false);
+                  // Удаление куки для каждого параметра входа
+                  Cookies.remove("usermail");
+                  Cookies.remove("username");
+                  Cookies.remove("userstate");
+                  Cookies.remove("dispetcher_list");
                 }}
               ></div>
             </div>
@@ -284,4 +241,4 @@ function Header_customer() {
   );
 }
 
-export default Header_customer;
+export default HeaderDispetcher;

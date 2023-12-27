@@ -5,11 +5,11 @@ import { Link, NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
-function Header_dispetcher() {
+function HeaderCustomer() {
   let nav = useNavigate();
   let lang = useSelector((dat) => dat.language);
-  let dispetcher_list = useSelector((dat) => dat.dispetcher_list);
   let dispatch = useDispatch();
   const [burgstate, setBurgstate] = useState(false);
   let main = React.createRef();
@@ -57,6 +57,21 @@ function Header_dispetcher() {
                 <h3 className="header__logo">OKstudentam</h3>
               </Link>
             </div>
+            <div className="header__textmin">
+              {lang === "ru" ? "Время работы: c 9-00 до 21-00" : "Час роботи: c 9-00 до 21-00"}
+              <br />
+              {lang === "ru" ? "Работаем без выходных" : "Працюємо без вихідних"}
+            </div>
+
+            {/* <div className="blocklogobut">
+              <Link
+                to="/"
+                className="but logo__but"
+                onClick={() => dispatch({ type: "orderperehod", data: "1" })}
+              >
+                {lang === "ru" ? "Заказать работу" : "Замовити роботу"}
+              </Link>
+            </div> */}
           </div>
 
           <div
@@ -66,29 +81,54 @@ function Header_dispetcher() {
             ref={secondlvl}
           >
             <ul className="header__menu">
-              <li
-                className={`menu__item menu__link ${
-                  dispetcher_list === "forEvaluation" ? "menu__link_active" : ""
-                }`}
-                onClick={() => dispatch({ type: "SETDISPETCHERLIST", data: "forEvaluation" })}
-              >
-                {lang === "ru" ? "Ожидают оценки" : "Чекають на оцінку"}
+              <li className="menu__item">
+                <NavLink
+                  to="/"
+                  className={({ isActive }) => `${isActive ? "menu__link_active" : "menu__link"}`}
+                  onClick={() => dispatch({ type: "orderperehodnull", data: "" })}
+                >
+                  {lang === "ru" ? "Главная" : "Головна"}
+                </NavLink>
               </li>
-              <li
-                className={`menu__item menu__link ${
-                  dispetcher_list === "atWork" ? "menu__link_active" : ""
-                }`}
-                onClick={() => dispatch({ type: "SETDISPETCHERLIST", data: "atWork" })}
-              >
-                {lang === "ru" ? "В работе" : "В роботі"}
+              <li className="menu__item">
+                <NavLink
+                  to="/finishedworks"
+                  className={({ isActive }) => `${isActive ? "menu__link_active" : "menu__link"}`}
+                >
+                  {lang === "ru" ? "Готовые работы" : "Готові роботи"}
+                </NavLink>
               </li>
-              <li
-                className={`menu__item menu__link ${
-                  dispetcher_list === "done" ? "menu__link_active" : ""
-                }`}
-                onClick={() => dispatch({ type: "SETDISPETCHERLIST", data: "done" })}
-              >
-                {lang === "ru" ? "Выполненные" : "Виконані"}
+              <li className="menu__item">
+                <NavLink
+                  to="/guarantees"
+                  className={({ isActive }) => `${isActive ? "menu__link_active" : "menu__link"}`}
+                >
+                  {lang === "ru" ? "Гарантии" : "Гарантії"}
+                </NavLink>
+              </li>
+              <li className="menu__item">
+                <NavLink
+                  to="/helper"
+                  className={({ isActive }) => `${isActive ? "menu__link_active" : "menu__link"}`}
+                >
+                  {lang === "ru" ? "Помощь" : "Допомога"}
+                </NavLink>
+              </li>
+              <li className="menu__item">
+                <NavLink
+                  to="/kontacts"
+                  className={({ isActive }) => `${isActive ? "menu__link_active" : "menu__link"}`}
+                >
+                  {lang === "ru" ? "Контакты" : "Контакти"}
+                </NavLink>
+              </li>
+              <li className="menu__item">
+                <NavLink
+                  to="/personalarea"
+                  className={({ isActive }) => `${isActive ? "menu__link_active" : "menu__link"}`}
+                >
+                  {lang === "ru" ? "Кабинет заказчика" : "Кабінет замовника"}
+                </NavLink>
               </li>
             </ul>
             <div className="langpanel">
@@ -110,7 +150,15 @@ function Header_dispetcher() {
                 className="userexit"
                 onClick={() => {
                   nav("/");
-                  dispatch({ type: "USERSTATE", data: "" });
+                  dispatch({
+                    type: "USERDATA",
+                    data: { username: "", userstate: "", usermail: "" },
+                  });
+                  // Удаление куки для каждого параметра входа
+                  Cookies.remove("usermail");
+                  Cookies.remove("username");
+                  Cookies.remove("userstate");
+                  Cookies.remove("dispetcher_list");
                 }}
               ></div>
             </div>
@@ -183,6 +231,18 @@ function Header_dispetcher() {
               {lang === "ru" ? "Контакты" : "Контакти"}
             </Link>
           </li>
+          <li className="menu__item">
+            <Link
+              to="/personalarea"
+              className="header__drop-link"
+              onClick={() => {
+                setBurgstate((x) => !x);
+                enableBodyScroll(main.current);
+              }}
+            >
+              {lang === "ru" ? "Кабинет заказчика" : "Кабінет замовника"}
+            </Link>
+          </li>
           <li className="header__drop-item">
             <div className="langpanel">
               <div className="switch">
@@ -203,8 +263,16 @@ function Header_dispetcher() {
                 className="userexit"
                 onClick={() => {
                   nav("/");
-                  dispatch({ type: "USERSTATE", data: "" });
+                  dispatch({
+                    type: "USERDATA",
+                    data: { username: "", userstate: "", usermail: "" },
+                  });
                   setBurgstate(false);
+                  // Удаление куки для каждого параметра входа
+                  Cookies.remove("usermail");
+                  Cookies.remove("username");
+                  Cookies.remove("userstate");
+                  Cookies.remove("dispetcher_list");
                 }}
               ></div>
             </div>
@@ -245,4 +313,4 @@ function Header_dispetcher() {
   );
 }
 
-export default Header_dispetcher;
+export default HeaderCustomer;

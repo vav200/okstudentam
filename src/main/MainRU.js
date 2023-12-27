@@ -6,7 +6,6 @@ import { Helmet } from "react-helmet";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import { useSelector } from "react-redux";
 import { Fade, Zoom, Slide } from "react-awesome-reveal";
-import RandomLetters from "./RandomLetters";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale } from "react-datepicker";
@@ -18,9 +17,11 @@ function MainRU() {
   const [selectedDate, setSelectedDate] = useState(null);
 
   let perehod = useSelector((dat) => dat.orderperehod);
+  let domen = useSelector((dat) => dat.domen);
   let formmail = React.createRef();
   let main = React.createRef();
   let titleform = React.createRef();
+
   const [themeR, setThemeR] = useState("history");
   const [typeofWorkR, setTypeofWorkR] = useState("referat");
   const [timeLimitR, setTimeLimitR] = useState("1");
@@ -100,7 +101,8 @@ function MainRU() {
       if (email === "" || email === "err") setEmail("err");
     } else {
       disableBodyScroll(main.current);
-      fetch("https://okstudentam.com.ua/mailerphp/send.php", {
+      let url = domen + "/mailerphp/send.php";
+      fetch(url, {
         method: "POST",
         // headers: {
         //   "content-type": "application/x-www-form-urlencoded",
@@ -140,6 +142,7 @@ function MainRU() {
           setTypework("");
           setDateTime("");
           setUnikalnost("");
+          setNumstr("");
           setKoments("");
           setTelephone("");
           setEmail("");
@@ -161,7 +164,6 @@ function MainRU() {
           content="Заказать уникальную, или купить: курсовую, дипломную, реферат, эссе, презентацию, отчёт по практике и т.д."
         />
       </Helmet>
-      {/* <RandomLetters /> */}
 
       <div className={`messok__backfon ${execstate ? "messok__backfon_active" : ""}`}></div>
       <div
@@ -482,6 +484,7 @@ function MainRU() {
             className={`inpsecondform ${unikalnost === "err" ? "inpsecondform_error" : ""}  `}
             rows="1"
             onChange={(e) => {
+              validNum(e);
               setUnikalnost(e.target.value);
               setErrormes("");
             }}
@@ -501,6 +504,7 @@ function MainRU() {
             className={`inpsecondform ${numstr === "err" ? "inpsecondform_error" : ""}  `}
             rows="1"
             onChange={(e) => {
+              validNum(e);
               setNumstr(e.target.value);
               setErrormes("");
             }}

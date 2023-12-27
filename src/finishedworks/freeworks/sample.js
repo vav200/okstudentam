@@ -18,14 +18,14 @@ export default function Work354() {
     scrollToTop();
   }, []);
 
-  function sendcount() {
-    const countUrl = "https://okstudentam.com.ua/adpanel/count_downloads.php";
-    fetch(countUrl)
-      .then((data) => data.text())
-      .then((data) => {
-        console.log(data);
-      });
-  }
+  // function sendcount() {
+  //   const countUrl = "https://okstudentam.com.ua/adpanel/count_downloads.php";
+  //   fetch(countUrl)
+  //     .then((data) => data.text())
+  //     .then((data) => {
+  //       console.log(data);
+  //     });
+  // }
 
   return (
     <main>
@@ -58,7 +58,7 @@ export default function Work354() {
 
       <div className="downloadblock">
         <a
-          onClick={sendcount}
+          // onClick={sendcount}
           className="downloadbut text-center"
           href={`https://okstudentam.com.ua/freeworks/${finishedworks[numelmas].key}.rar`}
           download

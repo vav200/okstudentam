@@ -1,24 +1,30 @@
-import "./personal_area.css";
+import "./personalarea.css";
 import { Slide, Zoom, Fade } from "react-awesome-reveal";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useState, useEffect } from "react";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
+import Cookies from "js-cookie";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale } from "react-datepicker";
 import ru from "date-fns/locale/ru"; // Импорт русской локализации
-
 registerLocale("ru", ru); // Регистрация русской локализации
+// import uk from "date-fns/locale/uk"; // Импорт украинской локализации
+// registerLocale("uk", uk); // Регистрация украинской локализации
 
-function Customer_area() {
+function CustomerArea() {
   let username = useSelector((dat) => dat.username);
   let usermail = useSelector((dat) => dat.usermail);
+  let userstate = useSelector((dat) => dat.userstate);
+  let dispetcher_list = useSelector((dat) => dat.dispetcher_list);
+
   let dispatch = useDispatch();
   let lang = useSelector((dat) => dat.language);
   let formForOrder = React.createRef();
   let formForMessage = React.createRef();
   let main = React.createRef();
   let titleform = React.createRef();
+  let domen = useSelector((dat) => dat.domen);
 
   const [selectedDate, setSelectedDate] = useState(null);
   const [orderform, setOrderform] = useState(false);
@@ -71,7 +77,8 @@ function Customer_area() {
         console.log(`${key}: ${dataform.get(key)}`);
       }
       disableBodyScroll(main.current);
-      fetch("http://okstudentam.ua/users/sendOrder.php", {
+      let url = domen + "/users/sendOrder.php";
+      fetch(url, {
         method: "POST",
         body: dataform,
       })
@@ -85,6 +92,7 @@ function Customer_area() {
             setErrormes("Ошибка отправки! Обратитесь к администрации сервиса");
             setExecstate((x) => !x);
           }
+          setStateSendMessage((x) => x + 1);
           setTheme("");
           setSubject("");
           setTypework("");
@@ -104,7 +112,8 @@ function Customer_area() {
   }
 
   function reloadOrders() {
-    fetch("http://okstudentam.ua/users/getUserOrders.php", {
+    let url = domen + "/users/getUserOrders.php";
+    fetch(url, {
       method: "POST",
       headers: {
         "content-type": "application/x-www-form-urlencoded",
@@ -120,6 +129,28 @@ function Customer_area() {
       .then((data) => {
         if (data) {
           setUserorders(data);
+        }
+      });
+  }
+
+  function changStatusIcons(numorder) {
+    let url = domen + "/users/changStatusIconsbyCustomer.php";
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+      },
+      body: "&orderNumber=" + numorder,
+    })
+      .then((data) => {
+        if (!data.ok) {
+          throw new Error(`Network response was not ok, status: ${data.status}`);
+        }
+        return data.text();
+      })
+      .then((data) => {
+        if (data) {
+          reloadOrders();
         }
       });
   }
@@ -174,25 +205,34 @@ function Customer_area() {
   }
 
   function sendmessage(e) {
-    let dataform = new FormData(formForMessage.current);
+    let dataform = new FormData();
     e.preventDefault();
     if (message === "" && addDopfiles === "") {
       return false;
     } else {
       dataform.append("orderNumber", selectedOrder.numorder);
+      dataform.append("message", message);
+      // Добавляем пустое поле addDopfiles, если массив пуст
+      if (addDopfiles.length === 0) {
+        dataform.append("addDopfiles", "");
+      } else {
+        // Добавляем каждый элемент массива с ключом вида "addDopfiles[]"
+        addDopfiles.forEach((file, index) => {
+          dataform.append(`addDopfiles[${index}]`, file);
+        });
+      }
       for (let key of dataform.keys()) {
         console.log(`${key}: ${dataform.get(key)}`);
       }
-      disableBodyScroll(main.current);
-      fetch("http://okstudentam.ua/users/sendMessageOnOrder.php", {
+      let url = domen + "/users/sendMessageFromCustomer.php";
+      fetch(url, {
         method: "POST",
         body: dataform,
       })
         .then((data) => data.text())
         .then((data) => {
-          console.log(data);
           setMessage("");
-          setAddDopfiles("");
+          setAddDopfiles([]);
           setStateSendMessage((x) => x + 1);
         });
     }
@@ -205,19 +245,18 @@ function Customer_area() {
     }
     if (updateselectedOrder.customerFiles) {
       let customerFilesObject = JSON.parse(updateselectedOrder.customerFiles);
-      console.log(customerFilesObject);
-      return Object.entries(customerFilesObject).map(([filename, fileData]) => {
+      return customerFilesObject.map((item, ind) => {
         return (
-          <li className="list-interval">
+          <li className="list-interval" key={"fc" + ind}>
             <a
               className="order__link"
-              href={`http://okstudentam.ua/users/${fileData.path}`}
+              href={`${domen}/users/${item.path}`}
               download
               target="_blank"
             >
-              {filename}
+              {item.name}
             </a>
-            <p className="p-0 m-0">{fileData.dataTime}</p>
+            <p className="p-0 m-0">{item.dataTime}</p>
           </li>
         );
       });
@@ -231,22 +270,22 @@ function Customer_area() {
     }
     if (updateselectedOrder.authorFiles) {
       let authorFilesObject = JSON.parse(updateselectedOrder.authorFiles);
-      return Object.entries(authorFilesObject).map(([filename, fileData]) => {
+      return authorFilesObject.map((item, ind) => {
         return (
-          <li className="list-interval">
+          <li className="list-interval" key={"fa" + ind}>
             <a
               className="order__link"
-              href={`http://okstudentam.ua/users/${fileData.path}`}
+              href={`${domen}/users/${item.path}`}
               download
               target="_blank"
             >
-              {filename}
+              {item.name}
             </a>
-            <p className="p-0 m-0">{fileData.dataTime}</p>
+            <p className="p-0 m-0">{item.dataTime}</p>
           </li>
         );
       });
-    } else return <p>Нет приложенных файлов</p>;
+    } else return <p>{lang === "ru" ? "Нет приложенных файлов" : "Немає доданих файлів"}</p>;
   }
 
   function showCorrespondence() {
@@ -256,12 +295,13 @@ function Customer_area() {
     }
     if (updateselectedOrder.correspondence) {
       let correspondenceObject = JSON.parse(updateselectedOrder.correspondence);
-      console.log(correspondenceObject);
-
-      return correspondenceObject.map((item) => {
+      // console.log(correspondenceObject);
+      return correspondenceObject.map((item, ind) => {
         return (
-          <li className={item.status === "customer" ? "message__customer" : "message__author"}>
-            {" "}
+          <li
+            className={item.status === "customer" ? "message__customer" : "message__author"}
+            key={"corr" + ind}
+          >
             {item.text}
             <p className="message__datatime">{item.date}</p>
           </li>
@@ -275,8 +315,8 @@ function Customer_area() {
   }
 
   useEffect(() => {
-    setUserorders("");
-    fetch("http://okstudentam.ua/users/getUserOrders.php", {
+    let url = domen + "/users/getUserOrders.php";
+    fetch(url, {
       method: "POST",
       headers: {
         "content-type": "application/x-www-form-urlencoded",
@@ -290,10 +330,16 @@ function Customer_area() {
         return data.json();
       })
       .then((data) => {
-        console.log(data);
         if (data) {
           setUserorders(data);
           showCustomerFiles();
+          // Установка куки для каждого параметра входа
+          Cookies.set("usermail", usermail);
+          Cookies.set("username", username);
+          Cookies.set("userstate", userstate);
+          let dispetcherListValue = dispetcher_list ? dispetcher_list : "forEvaluation";
+          Cookies.set("dispetcher_list", dispetcherListValue);
+          dispatch({ type: "SETDISPETCHERLIST", data: dispetcherListValue });
         }
       });
   }, [stateSendMessage]);
@@ -355,29 +401,47 @@ function Customer_area() {
 
       <div className={selectedOrderName === "" ? "d-block" : "d-none"}>
         {userorders ? (
-          <ul className={`orders__list ${orderform ? "d-none" : "d-block"}`}>
-            {userorders.map((item) => (
-              <li className="orders__item">
-                <div
-                  className="orders__box"
-                  onClick={() => {
-                    setSelectedOrderName(item.theme);
-                    selectedOrderInfo(item.theme);
-                  }}
-                >
-                  {item.theme}
-                </div>
-                <ul className="orders__list-secondlvl">
-                  <li>
-                    {lang === "ru" ? "Статус заказа: " : "Статус заказу: "}
-                    {outputOrderStatus(item.status)}
-                  </li>
-                </ul>
-              </li>
-            ))}
-          </ul>
+          userorders === "notdata" ? (
+            <p className="mt-4 ps-3 fs-2">
+              {lang === "ru" ? "Нет данных для отображения" : "Немає даних для відображення"}
+            </p>
+          ) : (
+            <ul className={`orders__list ${orderform ? "d-none" : "d-block"}`}>
+              {userorders.map((item) => (
+                <li className="orders__item" key={item.numorder}>
+                  <div
+                    className="orders__box"
+                    onClick={() => {
+                      setSelectedOrderName(item.theme);
+                      selectedOrderInfo(item.theme);
+                      changStatusIcons(item.numorder);
+                    }}
+                  >
+                    <span className="orders__box_num">{"№" + item.numorder + " "}</span>
+                    {item.theme}
+                    <span
+                      className={`selectedOrder_newmess ${
+                        item.newMessAutor === "false" ? "d-none" : ""
+                      }`}
+                    ></span>
+                    <span
+                      className={`selectedOrder_newfile ${
+                        item.newFileAutor === "false" ? "d-none" : ""
+                      }`}
+                    ></span>
+                  </div>
+                  <ul className="orders__list-secondlvl">
+                    <li>
+                      {lang === "ru" ? "Статус заказа: " : "Статус заказу: "}
+                      {outputOrderStatus(item.status)}
+                    </li>
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          )
         ) : (
-          <p className="mt-4 ps-3">Загрузка данных...</p>
+          <p className="mt-4 ps-3">{lang === "ru" ? "Загрузка данных" : "Завантаження даних"}...</p>
         )}
       </div>
 
@@ -388,7 +452,7 @@ function Customer_area() {
           <div className="blockform">
             <label htmlFor="fulltheme">
               <div className={`labelsecondform ${theme === "err" ? "labelerror" : ""}`}>
-                * Тема работы:
+                * {lang === "ru" ? "Тема работы:" : "Тема роботи:"}
               </div>
             </label>
             <textarea
@@ -418,13 +482,17 @@ function Customer_area() {
                 setErrormes("");
               }}
               value={subject === "err" ? "" : subject}
-              placeholder="педагогика, психология, менеджмент, экономика и т.д."
+              placeholder={
+                lang === "ru"
+                  ? "педагогика, психология, менеджмент, экономика и т.д."
+                  : "педагогіка, психологія, менеджмент, економіка і т.д."
+              }
             />
           </div>
           <div className="blockform">
             <label>
               <div className={`labelsecondform ${typework === "err" ? "labelerror" : ""}`}>
-                * Тип работы:
+                * {lang === "ru" ? "Тип работы:" : "Тип роботи:"}
               </div>
             </label>
             <select
@@ -472,7 +540,7 @@ function Customer_area() {
           <div className="blockform">
             <label>
               <div className={`labelsecondform ${dateTime === "err" ? "labelerror" : ""}`}>
-                * Срок сдачи:
+                * {lang === "ru" ? "Срок сдачи:" : "Строк здачі:"}
               </div>
             </label>
             <div>
@@ -492,14 +560,14 @@ function Customer_area() {
                 // timeInput={customTimeInput}
                 // dateFormat="dd/MM/yyyy HH:mm"
                 value={dateTime === "err" ? "" : dateTime}
-                placeholderText="дата/месяц/год"
+                placeholderText={lang === "ru" ? "дата/месяц/год" : "дата/місяць/рік"}
               />
             </div>
           </div>
           <div className="blockform">
             <label>
               <div className={`labelsecondform ${unikalnost === "err" ? "labelerror" : ""}`}>
-                * Уникальность, %:
+                * {lang === "ru" ? "Уникальность" : "Уникальність"}, %:
               </div>
             </label>
             <textarea
@@ -513,13 +581,17 @@ function Customer_area() {
                 setErrormes("");
               }}
               value={unikalnost === "err" ? "" : unikalnost}
-              placeholder="по умолчанию AntiPlagiarism.NET"
+              placeholder={
+                lang === "ru"
+                  ? "по умолчанию AntiPlagiarism.NET"
+                  : "за промовчанням AntiPlagiarism.NET"
+              }
             />
           </div>
           <div className="blockform">
             <label>
               <div className={`labelsecondform ${numstr === "err" ? "labelerror" : ""}`}>
-                * Количество страниц:
+                * {lang === "ru" ? "Количество страниц:" : "Кількість сторінок:"}
               </div>
             </label>
             <textarea
@@ -533,12 +605,18 @@ function Customer_area() {
                 setErrormes("");
               }}
               value={numstr === "err" ? "" : numstr}
-              placeholder="по умолчанию шрифт Times New Roman, размер 14 интервал, 1.5"
+              placeholder={
+                lang === "ru"
+                  ? "по умолчанию шрифт Times New Roman, размер 14 интервал, 1.5"
+                  : "за промовчанням шрифт Times New Roman, розмір 14 інтервал, 1.5"
+              }
             />
           </div>
           <div className="blockform">
             <label>
-              <div className="labelsecondform">Комментарии к заказу:</div>
+              <div className="labelsecondform">
+                {lang === "ru" ? "Комментарии к заказу:" : "Коментарі до замовлення:"}
+              </div>
             </label>
             <textarea
               type="text"
@@ -561,20 +639,25 @@ function Customer_area() {
                 multiple
                 onChange={(e) => setAddfiles(Array.from(e.target.files))}
               />
-              <div className="but_gray">Файлы к заказу</div>
+              <div className="but_gray">
+                {lang === "ru" ? "Файлы к заказу" : "Файли до замовлення"}
+              </div>
             </label>
             <ul className="orders__files-list">
               {addfiles ? addfiles.map((file, index) => <li key={index}>{file.name}</li>) : ""}
             </ul>
           </div>
 
-          <label className="primechanie">* - поля обязательные для заполнения</label>
+          <label className="primechanie">
+            * -
+            {lang === "ru" ? "поля обязательные для заполнения" : "поля обов'язкові для заповнення"}
+          </label>
 
           <div className="blockbut">
             <input
               type="submit"
               name="but"
-              value="Заказать"
+              value={lang === "ru" ? "Заказать" : "Замовити"}
               className="but order__but"
               onClick={sendorder}
             />
@@ -588,19 +671,25 @@ function Customer_area() {
 
       <div className={selectedOrderName === "" ? "d-none" : "d-block"}>
         <div className="orders__list">
-          <h4 className="mb-3 selectedOrder" onClick={() => setSelectedOrderName("")}>
+          <h4
+            className="mb-3 selectedOrder"
+            onClick={() => {
+              setSelectedOrderName("");
+            }}
+          >
+            <span className="selectedOrder_num">{"№" + selectedOrder.numorder + " "}</span>
             {selectedOrderName}
           </h4>
 
           <div className="order__switches">
             <div className="order__switch switch1" onClick={() => setSwitchorderinfo(1)}>
-              Инфо
+              {lang === "ru" ? "Инфо" : "Інфо"}
             </div>
             <div className="order__switch switch2" onClick={() => setSwitchorderinfo(2)}>
-              Мои файлы
+              {lang === "ru" ? "Мои файлы" : "Мої файли"}
             </div>
             <div className="order__switch switch3" onClick={() => setSwitchorderinfo(3)}>
-              Файлы автора
+              {lang === "ru" ? "Файлы автора" : "Файли автора"}
             </div>
           </div>
           <div
@@ -610,31 +699,31 @@ function Customer_area() {
           >
             <ul className={`orders__list-secondlvl ${switchorderinfo == 1 ? "d-block" : "d-none"}`}>
               <li>
-                {lang === "ru" ? "Тип работы:" : "Тип роботы:"}{" "}
+                {lang === "ru" ? "Тип работы: " : "Тип роботы: "}
                 {selectedOrder === "" ? "" : outputTypeWork(selectedOrder.typework)}
               </li>
               <li>
-                {lang === "ru" ? "Дата подачи заявки:" : "Дата подання заявки:"}{" "}
+                {lang === "ru" ? "Дата подачи заявки: " : "Дата подання заявки: "}
                 {selectedOrder === "" ? "" : selectedOrder.applicationDate}
               </li>
               <li>
-                {lang === "ru" ? "Срок выполнения заказа:" : "Термін виконання замовлення:"}{" "}
+                {lang === "ru" ? "Срок выполнения заказа: " : "Термін виконання замовлення: "}
                 {selectedOrder === "" ? "" : selectedOrder.completionDate}
               </li>
               <li>
-                {lang === "ru" ? "Уникальность:" : "Уникальність:"}{" "}
+                {lang === "ru" ? "Уникальность: " : "Уникальність: "}
                 {selectedOrder === "" ? "" : selectedOrder.unikalnost}%
               </li>
               <li>
-                {lang === "ru" ? "Число страниц:" : "Кількість сторінок:"}{" "}
+                {lang === "ru" ? "Число страниц: " : "Кількість сторінок: "}
                 {selectedOrder === "" ? "" : selectedOrder.numstr}
               </li>
               <li>
-                {lang === "ru" ? "Коментарии:" : "Коментарі:"}{" "}
+                {lang === "ru" ? "Коментарии: " : "Коментарі: "}
                 {selectedOrder === "" ? "" : selectedOrder.koments}
               </li>
               <li>
-                {lang === "ru" ? "Статус заказа:" : "Статус заказу:"}{" "}
+                {lang === "ru" ? "Статус заказа: " : "Статус заказу: "}
                 {outputOrderStatus(selectedOrder.status)}
               </li>
             </ul>
@@ -673,7 +762,7 @@ function Customer_area() {
                 multiple
                 onChange={(e) => setAddDopfiles(Array.from(e.target.files))}
               />
-              <div className="but_gray">Добавить файлы</div>
+              <div className="but_gray">{lang === "ru" ? "Добавить файлы" : "Додати файли"}</div>
             </label>
           </div>
 
@@ -681,7 +770,7 @@ function Customer_area() {
             <input
               type="submit"
               name="but"
-              value="Отправить"
+              value={lang === "ru" ? "Отправить" : "Відправити"}
               className="but order__but"
               onClick={sendmessage}
             />
@@ -697,4 +786,4 @@ function Customer_area() {
   );
 }
 
-export default Customer_area;
+export default CustomerArea;

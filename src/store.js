@@ -1,6 +1,8 @@
 import { createStore } from "redux";
 
 let defaultstate = {
+  domen: "http://okstudentam.ua",
+  // domen: "https://okstudentam.com.ua",
   language: "ru",
   login: "admin",
   password: "1977",
@@ -38,8 +40,6 @@ function reducer(state = defaultstate, action) {
       return { ...state, orderperehod: state.orderperehod + action.data };
     case "orderperehodnull":
       return { ...state, orderperehod: action.data };
-    case "USERSTATE":
-      return { ...state, userstate: action.data };
     case "USERDATA":
       return {
         ...state,

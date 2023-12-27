@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import { useNavigate } from "react-router-dom";
 
-function Header_user() {
+function HeaderUser() {
   let nav = useNavigate();
   let lang = useSelector((dat) => dat.language);
   let dispatch = useDispatch();
@@ -16,12 +16,12 @@ function Header_user() {
   let formreg = React.createRef();
   let formenter = React.createRef();
   let formrecall = React.createRef();
+  let domen = useSelector((dat) => dat.domen);
+
   const [secondlvlmenustate, setSecondlvlmenustate] = useState(false);
   const [scrollpos, setScrollpos] = useState();
   const [loginpanel, setLoginpanel] = useState(false);
-
   const [errormes, setErrormes] = useState("");
-
   const [login, setLogin] = useState("");
   const [pass, setPass] = useState("");
   const [username, setUsername] = useState("");
@@ -57,10 +57,8 @@ function Header_user() {
       if (login === "" || login === "err") setLogin("err");
       if (pass === "" || pass === "err") setPass("err");
     } else {
-      // for (var pair of dataform.entries()) {
-      //   console.log(pair[0] + ": " + pair[1]);
-      // }
-      fetch("http://okstudentam.ua/users/getUser.php", {
+      let url = domen + "/users/getUser.php";
+      fetch(url, {
         method: "POST",
         body: dataform,
       })
@@ -78,7 +76,7 @@ function Header_user() {
             setLogin("");
             setPass("");
             dispatch({ type: "USERDATA", data: data });
-            nav("/personal_area");
+            nav("/personalarea");
           } else {
             if ((lang = "ru")) setErrormes("неверный логин или пароль");
             else setErrormes("невірний логін або пароль");
@@ -102,7 +100,8 @@ function Header_user() {
     if (recallmail === "" || recallmail === "err") {
       if (recallmail === "" || recallmail === "err") setRecallmail("err");
     } else {
-      fetch("http://okstudentam.ua/users/getPassword.php", {
+      let url = domen + "/users/getPassword.php";
+      fetch(url, {
         method: "POST",
         body: dataform,
       })
@@ -155,13 +154,14 @@ function Header_user() {
       if (usermail === "" || usermail === "err") setUsermail("err");
     } else {
       let generpass = Number(Math.round(Math.random() * 1000000));
-      console.log(generpass);
       setUserpass(generpass);
+      console.log(generpass);
       dataform.append("userpass", generpass);
       dataform.append("userstate", "customer");
       setDataregistration(dataform);
 
-      fetch("http://okstudentam.ua/users/confirmMail.php", {
+      let url = domen + "/users/confirmMail.php";
+      fetch(url, {
         method: "POST",
         body: dataform,
       })
@@ -199,7 +199,8 @@ function Header_user() {
       if (confirmmail === "" || confirmmail === "err") setConfirmmail("err");
     } else {
       if (userpass == confirmmail) {
-        fetch("http://okstudentam.ua/users/createUser.php", {
+        let url = domen + "/users/createUser.php";
+        fetch(url, {
           method: "POST",
           body: dataregistration,
         })
@@ -221,8 +222,15 @@ function Header_user() {
               setUserphone("");
               setUsermail("");
               setRecallmail("");
-              dispatch({ type: "USERSTATE", data: "customer" });
-              nav("/personal_area");
+              dispatch({
+                type: "USERDATA",
+                data: {
+                  userstate: dataregistration.get("userstate"),
+                  usermail: dataregistration.get("usermail"),
+                  username: dataregistration.get("username"),
+                },
+              });
+              nav("/personalarea");
             } else {
               setLoginpanel("error_servise");
             }
@@ -658,7 +666,7 @@ function Header_user() {
         <div className="userpanel__inpblockbut mt-4">
           <input
             type="submit"
-            value="Подтвердить"
+            value={lang === "ru" ? "Подтвердить" : "Підтвердити"}
             className="but userpanel__but"
             onClick={confirm}
           />
@@ -813,4 +821,4 @@ function Header_user() {
   );
 }
 
-export default Header_user;
+export default HeaderUser;
