@@ -1,0 +1,325 @@
+.blockform {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: start;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+.labelfirstform {
+  display: inline-block;
+  width: 265px;
+}
+.labelsecondform {
+  display: inline-block;
+}
+.labelerror::after {
+  content: " заполнять обязательно";
+  color: orange;
+  font-size: 0.8rem;
+}
+.labelerrorUA::after {
+  content: " заповнювати обов'язково";
+  color: rgb(243, 198, 18);
+  font-size: 0.8rem;
+}
+.labelthirdform {
+  display: inline-block;
+  width: 130px;
+}
+.inpfirstform {
+  width: 200px;
+  border: 1px solid rgb(202, 202, 202);
+  font-size: 0.8rem;
+  border-radius: 5px;
+  padding: 3px 10px;
+  outline: none;
+}
+.inpfirstform:focus {
+  outline: #7ef580 solid 1px;
+  border: 1px solid transparent;
+  outline-offset: -1px;
+}
+.inpfirstform_error {
+  outline: 1px solid orange !important;
+  outline-offset: -1px;
+}
+.inpsecondform {
+  /* display: block !important; */
+  width: 100%;
+  border-radius: 5px;
+  padding: 5px 15px;
+  border: 1px solid rgb(202, 202, 202);
+  outline: none;
+}
+.inpsecondform::placeholder {
+  color: rgb(172, 171, 171);
+}
+.inpsecondform:focus {
+  outline: #7ef580 solid 1px;
+  outline-offset: -1px;
+  border: 1px solid transparent;
+}
+.inpsecondform_contacts {
+  width: 225px;
+  display: block;
+}
+.inpsecondform_error {
+  outline: 1px solid orange !important;
+  outline-offset: -1px;
+}
+
+.form {
+  border-radius: 10px;
+  padding: 30px 20px 2px 20px;
+  background-color: #f4f4f4;
+  border: 1px solid #e4e3e3;
+}
+.blockbut {
+  margin-top: 35px;
+  margin-bottom: 20px;
+}
+.but {
+  width: calc(100% - 300px);
+  height: 40px;
+  border-radius: 18px;
+  background: #8ff891;
+  outline: none;
+  border: #7dd97f;
+  opacity: 1;
+  /* color: #4e9d4d; */
+  /* color: #3f7c3f; */
+  color: #4e864e;
+  font-weight: 500;
+  font-size: 1.15rem;
+  box-shadow: 0px 3px 2px rgba(195, 194, 194, 0.917);
+  transition: 0.1s all linear;
+  cursor: pointer;
+}
+/* .but:hover {
+  background: #7ef580;  
+  color: #3f7c3f;
+} */
+.but:active {
+  box-shadow: 0px 1px 0px rgb(195, 194, 194);
+  transform: translateY(-1px);
+}
+.rezult {
+  font-size: 1.5rem;
+  font-weight: 500;
+  padding: 10px 0 15px 0;
+  color: grey;
+}
+.primechanie {
+  margin-top: 20px;
+  font-weight: 500;
+}
+.uploadfile {
+  opacity: 0;
+  visibility: hidden;
+  position: fixed;
+}
+.getfiles {
+  /* display: block; */
+  /* width: 100%; */
+}
+.loadzone {
+  line-height: 36px;
+  padding-left: 15px;
+  color: rgb(172, 171, 171);
+  border-radius: 10px;
+  border: 2px dashed grey;
+  cursor: pointer;
+}
+.but_gray {
+  margin-top: 5px;
+  display: inline-block;
+  padding: 5px 20px;
+  border-radius: 18px;
+  background-color: rgb(236, 235, 235);
+  outline: none;
+  border: 1px solid rgb(202, 202, 202);
+  opacity: 0.8;
+  color: gray;
+  text-decoration: none;
+  font-size: 0.95rem;
+  box-shadow: 0px 3px 2px rgb(195, 194, 194);
+  transition: 0.1s all linear;
+  cursor: pointer;
+}
+.but_gray:hover {
+  border: 1px solid rgb(182, 182, 182);
+  color: rgb(77, 77, 77);
+}
+.but_gray:active {
+  box-shadow: 0px 0px 0px rgb(195, 194, 194);
+}
+
+.messok {
+  border-radius: 25px;
+  padding: 15px 17px 15px 17px;
+  top: 340px;
+  left: 50%;
+  right: auto;
+  max-width: 305px;
+  transform: translateX(-50%);
+  background-color: white;
+  position: fixed;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease-out;
+  z-index: 2;
+  font-size: 1.2rem;
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); */
+}
+.messok_active {
+  visibility: visible;
+  opacity: 1;
+}
+.messok__backfon {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: -50%;
+  bottom: 0;
+  background: darkslategrey;
+  opacity: 0.5;
+  z-index: 1;
+}
+.messok__backfon_active {
+  display: block;
+}
+.messok__color_ok {
+  border: 2px solid #7ef580;
+}
+.messok__color_err {
+  border: 2px solid orange;
+}
+.messok__but {
+  display: block;
+  margin: 30px auto 0 auto;
+  padding: 2px 22px 3px 22px;
+  border-radius: 12px;
+  border: none;
+  /* border: 2px solid rgb(178, 177, 177); */
+  /* box-shadow: 0px 2px 3px rgb(195, 194, 194); */
+}
+.messok__but:hover {
+  /* border: 2px solid rgb(205, 203, 203); */
+  box-shadow: 0px 0px 0px rgb(195, 194, 194);
+}
+.messok__but_ok {
+  background-color: #7ef580;
+  border: 1px solid #53f956;
+  color: #216523;
+  outline: 1px solid transparent;
+  transition: outline 0.1s linear;
+}
+.messok__but_ok:hover {
+  outline: 1px solid #4de54f;
+}
+.messok__but_err {
+  background-color: orange;
+  border: 1px solid rgb(220, 144, 2);
+  color: rgb(68, 44, 1);
+  outline: 1px solid transparent;
+  transition: outline 0.1s linear;
+}
+.messok__but_err:hover {
+  outline: 1px solid rgb(214, 140, 2);
+}
+.metka {
+  position: absolute;
+  top: -80px;
+}
+
+.react-datepicker-popper {
+  border-radius: 20px; /* Задайте радиус скругления границ */
+  border: none;
+}
+.react-datepicker__day.react-datepicker__day--selected {
+  background: #7ef580;
+  color: black;
+  border: 1px solid transparent;
+}
+.react-datepicker__navigation.react-datepicker__navigation--next,
+.react-datepicker__navigation.react-datepicker__navigation--previous {
+  margin-top: 10px;
+}
+.react-datepicker__year-read-view--down-arrow,
+.react-datepicker__month-read-view--down-arrow,
+.react-datepicker__month-year-read-view--down-arrow,
+.react-datepicker__navigation-icon::before {
+  border-color: rgb(209, 208, 208) !important;
+}
+.react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle::before,
+.react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle::after {
+  border-bottom-color: white !important;
+}
+.react-datepicker__month-container {
+  padding: 3px;
+}
+.react-datepicker {
+  border-radius: 15px !important;
+}
+.react-datepicker__header {
+  background-color: #fff !important;
+}
+.react-datepicker-popper[data-placement^="top"] {
+  padding-bottom: 5px !important;
+}
+.react-datepicker-popper[data-placement^="bottom"] {
+  padding-top: 12px !important;
+}
+.react-datepicker__input-time-container {
+  display: flex;
+  justify-content: center;
+  column-gap: 10px;
+  align-items: center;
+  margin: 5px 15px 10px 15px !important;
+  float: none !important;
+  width: auto !important;
+}
+.react-datepicker__input-time-container .react-datepicker-time__caption {
+  display: inline-block !important;
+  width: auto !important;
+}
+.react-datepicker__input-time-container
+  .react-datepicker-time__input-container
+  .react-datepicker-time__input {
+  margin-left: 0 !important;
+}
+
+@keyframes opacityTitle {
+  from {
+    opacity: 0;
+    animation-timing-function: ease-in;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .but {
+    width: calc(100% - 200px);
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .but {
+    width: calc(100% - 100px);
+  }
+}
+
+@media screen and (max-width: 440px) {
+  .metka {
+    position: absolute;
+    top: -70px;
+  }
+  .but {
+    width: calc(100% - 50px);
+  }
+}

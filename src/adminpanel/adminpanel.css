@@ -1,0 +1,98 @@
+.funcblock {
+}
+.inputblock {
+  margin: 0 0 10px 0;
+}
+.nameparam {
+  padding: 2px 8px;
+}
+.widtharea {
+  display: block;
+  width: 100%;
+  /* resize: none; */
+  outline: none;
+  border: 1px solid rgb(183, 182, 182);
+  border-radius: 7px;
+  padding: 3px 15px;
+  font-size: 0.8rem;
+}
+.keywords {
+  height: 70px;
+}
+.numstr,
+.typework {
+  height: 30px;
+  width: 220px;
+}
+.annotac,
+.namework {
+  height: 50px;
+}
+.cont,
+.intro,
+.conclus,
+.sources {
+  height: 180px;
+}
+.typework {
+}
+.butblock {
+  margin: 40px 0 30px 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+.but_gray.service__but {
+  display: inline-block;
+  width: inherit;
+  height: inherit;
+  margin: 0 auto;
+  padding: 5px 22px;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.note {
+  font-weight: 500;
+}
+.messbox {
+  border-radius: 10px;
+  border: 1px solid grey;
+  padding: 20px;
+  top: 300px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  position: fixed;
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+  z-index: 2;
+}
+.messbox_active {
+  opacity: 1;
+}
+.mess__backfon {
+  display: none;
+  position: fixed;
+  left: -200%;
+  right: -200%;
+  top: -50%;
+  bottom: 0;
+  background: darkslategrey;
+  opacity: 0.5;
+  z-index: 1;
+}
+.mess__backfon_active {
+  display: block;
+}
+.messbox__but {
+  display: block;
+  margin: 40px auto 0 auto;
+  padding: 2px 17px;
+  width: 100px;
+  border-radius: 10px;
+  border: 1px solid grey;
+}
+.messbox__but:hover {
+  border: 1px solid rgb(75, 75, 75);
+}

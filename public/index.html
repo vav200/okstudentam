@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- <meta name="theme-color" content="#000000" /> -->
+    <meta name="cypr-verification" content="e6bb4258619f72a9c33b7a3fe10e25ec" />
+
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <title>OKstudentam</title>
+  </head>
+  <body style="position: relative">
+    <!--LiveInternet counter-->
+    <script>
+      new Image().src =
+        "https://counter.yadro.ru/hit?r" +
+        escape(document.referrer) +
+        (typeof screen == "undefined"
+          ? ""
+          : ";s" +
+            screen.width +
+            "*" +
+            screen.height +
+            "*" +
+            (screen.colorDepth ? screen.colorDepth : screen.pixelDepth)) +
+        ";u" +
+        escape(document.URL) +
+        ";h" +
+        escape(document.title.substring(0, 150)) +
+        ";" +
+        Math.random();
+    </script>
+    <!--/LiveInternet-->
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZFX2J5NXE2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-ZFX2J5NXE2");
+    </script>
+
+    <!-- BEGIN PLERDY CODE -->
+    <script type="text/javascript" defer data-plerdy_code="1">
+      var _protocol = "https:" == document.location.protocol ? " https://" : " http://";
+      (_site_hash_code = "0e14e7b79eebf0debcff7d5199cecfe4"),
+        (_suid = 42323),
+        (plerdyScript = document.createElement("script"));
+      plerdyScript.setAttribute("defer", ""),
+        (plerdyScript.dataset.plerdymainscript = "plerdymainscript"),
+        (plerdyScript.src = "https://a.plerdy.com/public/js/click/main.js?v=" + Math.random());
+      var plerdymainscript = document.querySelector("[data-plerdymainscript='plerdymainscript']");
+      plerdymainscript && plerdymainscript.parentNode.removeChild(plerdymainscript);
+      try {
+        document.head.appendChild(plerdyScript);
+      } catch (t) {
+        console.log(t, "unable add script tag");
+      }
+    </script>
+    <!-- END PLERDY CODE -->
+
+    <div id="root"></div>
+  </body>
+</html>
