@@ -2,21 +2,39 @@ import "./personalarea.css";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useState, useEffect, useRef } from "react";
 import { usePageVisibility } from "react-page-visibility";
+import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 
 function DispetcherList() {
   let dispatch = useDispatch();
   let dispetcher_list = useSelector((dat) => dat.dispetcher_list);
-  // dispetcher_list = dispetcher_list ? dispetcher_list : "forEvaluation";
   let lang = useSelector((dat) => dat.language);
   let isVisibl = usePageVisibility();
   let domen = useSelector((dat) => dat.domen);
-  let selectedOrderNum = useSelector((dat) => dat.selectedOrderNum);
+  let main = useRef();
 
   const [orders, setOrders] = useState([]);
   const [findparameter, setFindparameter] = useState("bynum");
   const [searchname, setSearchname] = useState("");
-  const [fetchingData, setFetchingData] = useState(false);
   const timerIdRef = useRef(null);
+  const [numOrderdel, setNumOrderdel] = useState("");
+  const [confirmDel, setConfirmDel] = useState(false);
+
+  function delOrder(e) {
+    e.preventDefault();
+    setConfirmDel((x) => !x);
+    enableBodyScroll(main.current);
+    let dataform = new FormData();
+    dataform.append("numOrderToDel", numOrderdel);
+    let url = domen + "/users/delOrder.php";
+    fetch(url, {
+      method: "POST",
+      body: dataform,
+    })
+      .then((data) => data.text())
+      .then((data) => {
+        // console.log(data);
+      });
+  }
 
   function findOrder(e) {
     console.log(e.target.value);
@@ -79,9 +97,9 @@ function DispetcherList() {
           });
         }
         setOrders(data);
-        console.log(data);
-        console.log("isVisibl", isVisibl);
-        console.log("timerIdRef", timerIdRef);
+        // console.log(data);
+        // console.log("isVisibl", isVisibl);
+        // console.log("timerIdRef", timerIdRef);
       });
   }
 
@@ -101,7 +119,38 @@ function DispetcherList() {
   }, [dispetcher_list, isVisibl]);
 
   return (
-    <div>
+    <div ref={main}>
+      {/* ---------Подтверждение удаления сообщения--------- */}
+      <div
+        className={`confimMess__backfon ${confirmDel ? "confimMess__backfon_active" : ""}`}
+      ></div>
+      <div className={`confimMess ${confirmDel ? "confimMess_active" : ""}`}>
+        <h5>
+          {lang === "ru"
+            ? "Подтвердите удаление заказа №" + numOrderdel
+            : "Підтвердіть видалення заказу №" + numOrderdel}
+        </h5>
+        <hr />
+        <div className="confimMess__buttonBox mt-4">
+          <input
+            type="submit"
+            value={lang === "ru" ? "Да" : "Так"}
+            className="but but_orange"
+            onClick={(e) => delOrder(e)}
+          />
+          <input
+            type="submit"
+            value={lang === "ru" ? "Нет" : "Ні"}
+            className="but order__but ms-4 mt-0"
+            onClick={() => {
+              setConfirmDel((x) => !x);
+              enableBodyScroll(main.current);
+            }}
+          />
+        </div>
+      </div>
+      {/* ------------------------------------------------- */}
+
       <div className={`findblock `}>
         <input
           type="text"
@@ -142,14 +191,19 @@ function DispetcherList() {
                   )
                   .map((item) => (
                     <li className="orders__item" key={item.numorder}>
-                      <div
-                        className="orders__box"
-                        onClick={() => {
-                          dispatch({ type: "SELECTEDORDERNUM", data: item.numorder });
-                        }}
-                      >
-                        <span className="orders__box_num">{"№" + item.numorder + " "}</span>
+                      <div className="orders__box">
                         <span
+                          className="orders__box_num"
+                          onClick={() => {
+                            dispatch({ type: "SELECTEDORDERNUM", data: item.numorder });
+                          }}
+                        >
+                          {"№" + item.numorder + " "}
+                        </span>
+                        <span
+                          onClick={() => {
+                            dispatch({ type: "SELECTEDORDERNUM", data: item.numorder });
+                          }}
                           dangerouslySetInnerHTML={{ __html: item.theme.replace(/\n/g, "<br />") }}
                         />
                         <span
@@ -159,6 +213,33 @@ function DispetcherList() {
                         >
                           {item.countChatFromCustomer}
                         </span>
+                        {/* ---------------znak del--------------- */}
+                        <div
+                          className={`butForDel ms-auto ${
+                            dispetcher_list === "done" ? "" : "d-none"
+                          }`}
+                          onClick={() => {
+                            setConfirmDel((x) => !x);
+                            disableBodyScroll(main.current);
+                            setNumOrderdel(item.numorder);
+                          }}
+                        >
+                          <div
+                            className={`${
+                              item.status === "author"
+                                ? "butForDel__line_green"
+                                : "butForDel__line_grey"
+                            } butForDel__firstline`}
+                          ></div>
+                          <div
+                            className={`${
+                              item.status === "author"
+                                ? "butForDel__line_green"
+                                : "butForDel__line_grey"
+                            } butForDel__secondline`}
+                          ></div>
+                        </div>
+                        {/* --------------------------------------- */}
                       </div>
                       <ul className="orders__list-secondlvl">
                         <li>

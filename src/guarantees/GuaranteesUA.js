@@ -1,6 +1,6 @@
 import "./guarantees.css";
 import { Helmet } from "react-helmet";
-import { Slide, Zoom, Fade } from "react-awesome-reveal";
+import { Fade } from "react-awesome-reveal";
 
 function GuaranteesRU() {
   return (

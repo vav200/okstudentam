@@ -1,5 +1,4 @@
 import "./personalarea.css";
-import { Slide, Zoom, Fade } from "react-awesome-reveal";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useState, useEffect, useRef } from "react";
 import { usePageVisibility } from "react-page-visibility";
@@ -55,8 +54,8 @@ function CustomerList() {
         if (data && data !== "notdata") {
           data.sort((a, b) => a.numorder - b.numorder);
           thisOrder.sort((a, b) => a.numorder - b.numorder);
-          console.log("data", data);
-          console.log("thisOrder", thisOrder);
+          // console.log("data", data);
+          // console.log("thisOrder", thisOrder);
         }
         // console.log(
         //   thisOrder

@@ -2,6 +2,7 @@ import "./personalarea.css";
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { usePageVisibility } from "react-page-visibility";
+import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 
 function CustomerSelect() {
   let dispatch = useDispatch();
@@ -19,6 +20,31 @@ function CustomerSelect() {
   const [switchorderinfo, setSwitchorderinfo] = useState(true);
   const timerIdSelect = useRef(null);
   const isInitialLoad = useRef(true);
+  const [confirmDel, setConfirmDel] = useState(false);
+  const [nummestodel, setNummestodel] = useState("");
+  let main = useRef();
+
+  function delMessage(e) {
+    e.preventDefault();
+    setConfirmDel((x) => !x);
+    enableBodyScroll(main.current);
+    let dataform = new FormData();
+    let correspondenceObject = JSON.parse(selectedOrder.correspondence);
+    correspondenceObject.splice(nummestodel, 1);
+    console.log("index", nummestodel);
+    console.log(correspondenceObject);
+    dataform.append("orderNumber", selectedOrder.numorder);
+    dataform.append("correspondence", JSON.stringify(correspondenceObject));
+    let url = domen + "/users/delMessageInCorrespondence.php";
+    fetch(url, {
+      method: "POST",
+      body: dataform,
+    })
+      .then((data) => data.text())
+      .then((data) => {
+        console.log(data);
+      });
+  }
 
   function getLinkFromText(txt) {
     let incomingtext = txt;
@@ -30,12 +56,20 @@ function CustomerSelect() {
         return (
           <a key={index} href={part} target="_blank" rel="noopener noreferrer">
             {/* {part} */}
-            link
+            {lang === "ru" ? "ссылка" : "посилання"}
           </a>
         );
       } else {
         // Это обычный текст, вставляем его без изменений
-        return <span key={index}>{part} </span>;
+        // return <span key={index}>{part} </span>;
+        return (
+          <span
+            key={index}
+            dangerouslySetInnerHTML={{
+              __html: part.replace(/\n/g, "<br />"),
+            }}
+          />
+        );
       }
     });
     return textWithLinks;
@@ -48,7 +82,11 @@ function CustomerSelect() {
     let textWithLinks = parts.map((part, index) => {
       if (urlRegex.test(part)) {
         // Это ссылка, вставляем ее в тег <a>
-        return `<a key=${index} href=${part} target="_blank" rel="noopener noreferrer">link</a>`;
+        if (lang === "ru") {
+          return `<a key=${index} href=${part} target="_blank" rel="noopener noreferrer">ссылка</a>`;
+        } else {
+          return `<a key=${index} href=${part} target="_blank" rel="noopener noreferrer">посилання</a>`;
+        }
       } else {
         // Это обычный текст, вставляем его без изменений
         return `<span key=${index}>${part}</span>`;
@@ -95,6 +133,7 @@ function CustomerSelect() {
               href={`${domen}/users/${item.path}`}
               download
               target="_blank"
+              rel="noopener noreferrer"
             >
               {item.name}
             </a>
@@ -116,6 +155,7 @@ function CustomerSelect() {
               href={`${domen}/users/${item.path}`}
               download
               target="_blank"
+              rel="noopener noreferrer"
             >
               {item.name}
             </a>
@@ -129,39 +169,91 @@ function CustomerSelect() {
   function showCorrespondence() {
     if (selectedOrder.correspondence) {
       let correspondenceObject = JSON.parse(selectedOrder.correspondence);
-      console.log(correspondenceObject);
       return correspondenceObject.map((item, ind) => {
         return (
           <li
             className={item.status === "author" ? "message__customer" : "message__author"}
             key={"corr" + ind}
           >
-            <div className="order__chatnames">
-              {item.status === "customer" ? username + ":" : "OKstudentam:"}
-            </div>
-            <div
-              dangerouslySetInnerHTML={{
-                __html: getLinkFromTextChat(item.text),
-              }}
-            />
-            {item.hasOwnProperty("files") && (
-              <ul className="order__filesInChat">
-                {item.files.map((el, i) => (
-                  <li key={i}>
-                    <a
-                      className="order__linkChat"
-                      href={`${domen}/users/${el.path}`}
-                      download
-                      target="_blank"
-                    >
-                      {el.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <div className={`boxmessage `}>
+              <div className="order__chatnames">
+                <span>{item.status === "customer" ? username + ":" : "OKstudentam:"}</span>
+                {/* ---------------znak Del--------------- */}
+                {/* <div
+                  className={`butForDel ${item.status === "customer" ? "" : "d-none"}`}
+                  onClick={() => {
+                    setConfirmDel((x) => !x);
+                    disableBodyScroll(main.current);
+                    setNummestodel(ind);
+                  }}
+                >
+                  <div
+                    className={`${
+                      item.status === "author" ? "butForDel__line_green" : "butForDel__line_grey"
+                    } butForDel__firstline`}
+                  ></div>
+                  <div
+                    className={`${
+                      item.status === "author" ? "butForDel__line_green" : "butForDel__line_grey"
+                    } butForDel__secondline`}
+                  ></div>
+                </div> */}
+                {/* --------------------------------------- */}
+              </div>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: getLinkFromTextChat(item.text),
+                }}
+              />
+              {item.hasOwnProperty("files") && (
+                <ul className="order__filesInChat">
+                  {item.files.map((el, i) => (
+                    <li key={i}>
+                      <a
+                        className="order__linkChat"
+                        href={`${domen}/users/${el.path}`}
+                        download
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {el.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
 
-            <p className="message__datatime">{item.date}</p>
+              <p className="message__datatime">{item.date}</p>
+            </div>
+            {/* ---------Подтверждение удаления сообщения--------- */}
+            <div className={`confimMess ${confirmDel ? "confimMess_active" : ""}`}>
+              <h5>
+                {lang === "ru"
+                  ? "Подтвердите удаление сообщения в чате"
+                  : "Підтвердіть видалення повідомлення у чаті"}
+              </h5>
+
+              <hr />
+
+              <div className="confimMess__buttonBox mt-4">
+                <input
+                  type="submit"
+                  value={lang === "ru" ? "Да" : "Так"}
+                  className="but but_orange"
+                  onClick={(e) => delMessage(e)}
+                />
+                <input
+                  type="submit"
+                  value={lang === "ru" ? "Нет" : "Ні"}
+                  className="but order__but ms-4 mt-0"
+                  onClick={() => {
+                    setConfirmDel((x) => !x);
+                    enableBodyScroll(main.current);
+                  }}
+                />
+              </div>
+            </div>
+            {/* ------------------------------------------------- */}
           </li>
         );
       });
@@ -231,7 +323,7 @@ function CustomerSelect() {
       })
         .then((data) => data.text())
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           setMessage("");
           setAddDopfiles([]);
         });
@@ -263,7 +355,7 @@ function CustomerSelect() {
       window.scrollTo(0, document.body.scrollHeight);
     };
     scrollToBottome();
-  }, [isInitialLoad.current]);
+  }, [isInitialLoad]);
 
   useEffect(() => {
     let url = domen + "/users/getSelectedOrderByCustomer.php";
@@ -318,9 +410,12 @@ function CustomerSelect() {
   }, [isVisiblSelect]);
 
   return (
-    <div>
+    <div ref={main}>
       {selectedOrder ? (
         <>
+          <div
+            className={`confimMess__backfon ${confirmDel ? "confimMess__backfon_active" : ""}`}
+          ></div>
           <div className="orders__list">
             <h4 className="mb-3 selectedOrder d-flex">
               <span
@@ -337,14 +432,14 @@ function CustomerSelect() {
             </h4>
 
             <div className="order__switches">
-              <div className="order__switch switch1" onClick={() => setSwitchorderinfo(1)}>
-                {lang === "ru" ? "Инфо" : "Інфо"}
+              <div className="order__switch switch1__header" onClick={() => setSwitchorderinfo(1)}>
+                {/* {lang === "ru" ? "Инфо" : "Інфо"} */}
               </div>
-              <div className="order__switch switch2" onClick={() => setSwitchorderinfo(2)}>
-                {lang === "ru" ? "Мои файлы" : "Мої файли"}
+              <div className="order__switch switch2__header" onClick={() => setSwitchorderinfo(2)}>
+                {/* {lang === "ru" ? "Мои файлы" : "Мої файли"} */}
               </div>
-              <div className="order__switch switch3" onClick={() => setSwitchorderinfo(3)}>
-                {lang === "ru" ? "Файлы автора" : "Файли автора"}
+              <div className="order__switch switch3__header" onClick={() => setSwitchorderinfo(3)}>
+                {/* {lang === "ru" ? "Файлы автора" : "Файли автора"} */}
               </div>
             </div>
             <div

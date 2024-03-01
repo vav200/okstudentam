@@ -1,7 +1,7 @@
 import "./kontacts.css";
 import map from "./img/map.gif";
 import { Helmet } from "react-helmet";
-import { Slide, Fade, Zoom } from "react-awesome-reveal";
+import { Fade, Zoom } from "react-awesome-reveal";
 
 function Kontacts() {
   return (

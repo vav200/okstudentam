@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useState } from "react";
 import "./header.css";
 import { Link, NavLink } from "react-router-dom";
@@ -6,9 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import { useNavigate } from "react-router-dom";
 
-function HeaderUser() {
+function HeaderUser(props) {
   let nav = useNavigate();
   let lang = useSelector((dat) => dat.language);
+  // let statenow = useSelector((dat) => dat);
   let dispatch = useDispatch();
   const [burgstate, setBurgstate] = useState(false);
   let main = React.createRef();
@@ -19,13 +20,13 @@ function HeaderUser() {
   let domen = useSelector((dat) => dat.domen);
 
   const [secondlvlmenustate, setSecondlvlmenustate] = useState(false);
-  const [scrollpos, setScrollpos] = useState();
+  // const [scrollpos, setScrollpos] = useState();
   const [loginpanel, setLoginpanel] = useState(false);
   const [errormes, setErrormes] = useState("");
   const [login, setLogin] = useState("");
   const [pass, setPass] = useState("");
   const [username, setUsername] = useState("");
-  const [usersurname, setUsersurname] = useState("");
+  // const [usersurname, setUsersurname] = useState("");
   const [userphone, setUserphone] = useState("");
   const [usermail, setUsermail] = useState("");
   const [userpass, setUserpass] = useState("");
@@ -33,6 +34,7 @@ function HeaderUser() {
   const [recallmailstate, setRecallmailstate] = useState("");
   const [confirmmail, setConfirmmail] = useState("");
   const [dataregistration, setDataregistration] = useState();
+  const [howEnter, setHowEnter] = useState("");
 
   function closeadm(e) {
     e.preventDefault();
@@ -41,7 +43,7 @@ function HeaderUser() {
     setLogin("");
     setPass("");
     setUsername("");
-    setUsersurname("");
+    // setUsersurname("");
     setUserphone("");
     setUsermail("");
     setRecallmail("");
@@ -69,7 +71,7 @@ function HeaderUser() {
           return data.json();
         })
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           if (data) {
             setLoginpanel((x) => !x);
             enableBodyScroll(main.current);
@@ -112,7 +114,7 @@ function HeaderUser() {
           return data.text();
         })
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           if (data && data !== "none mail") {
             setRecallmailstate("ok");
           } else if (data && data === "none mail") {
@@ -155,7 +157,7 @@ function HeaderUser() {
     } else {
       let generpass = Number(Math.round(Math.random() * 1000000));
       setUserpass(generpass);
-      console.log(generpass);
+      // console.log(generpass);
       dataform.append("userpass", generpass);
       dataform.append("userstate", "customer");
       setDataregistration(dataform);
@@ -172,7 +174,7 @@ function HeaderUser() {
           return data.text();
         })
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           if (data && data !== "repeat mail") {
             setLoginpanel("confirmmail");
           } else if (data && data === "repeat mail") {
@@ -198,7 +200,7 @@ function HeaderUser() {
     if (confirmmail === "" || confirmmail === "err") {
       if (confirmmail === "" || confirmmail === "err") setConfirmmail("err");
     } else {
-      if (userpass == confirmmail) {
+      if (userpass === confirmmail) {
         setConfirmmail("");
 
         let url = domen + "/users/createUser.php";
@@ -213,14 +215,14 @@ function HeaderUser() {
             return data.text();
           })
           .then((data) => {
-            console.log(data);
+            // console.log(data);
             if (data) {
               setLoginpanel((x) => !x);
               enableBodyScroll(main.current);
               setLogin("");
               setPass("");
               setUsername("");
-              setUsersurname("");
+              // setUsersurname("");
               setUserphone("");
               setUsermail("");
               setRecallmail("");
@@ -250,20 +252,20 @@ function HeaderUser() {
     }
   }
 
-  useEffect(() => {
-    function hidemenu() {
-      let currposition = window.scrollY;
-      setScrollpos(currposition);
+  // useEffect(() => {
+  //   function hidemenu() {
+  //     let currposition = window.scrollY;
+  //     setScrollpos(currposition);
 
-      if (currposition > 60) {
-        setSecondlvlmenustate(true);
-      } else setSecondlvlmenustate(false);
-    }
-    window.onscroll = hidemenu;
-    return () => {
-      window.onscroll = hidemenu;
-    };
-  }, [scrollpos]);
+  //     if (currposition > 60) {
+  //       setSecondlvlmenustate(true);
+  //     } else setSecondlvlmenustate(false);
+  //   }
+  //   window.onscroll = hidemenu;
+  //   return () => {
+  //     window.onscroll = hidemenu;
+  //   };
+  // }, [scrollpos]);
 
   return (
     <header className="header position-relative" ref={main}>
@@ -295,13 +297,16 @@ function HeaderUser() {
             </div>
 
             <div className="blocklogobut">
-              <Link
-                to="/"
+              <div
                 className="but logo__but"
-                onClick={() => dispatch({ type: "orderperehod", data: "1" })}
+                onClick={() => {
+                  disableBodyScroll(main.current);
+                  setHowEnter("order");
+                  setLoginpanel("enter");
+                }}
               >
                 {lang === "ru" ? "Заказать работу" : "Замовити роботу"}
-              </Link>
+              </div>
             </div>
           </div>
 
@@ -374,6 +379,7 @@ function HeaderUser() {
                 onClick={() => {
                   disableBodyScroll(main.current);
                   setLoginpanel("enter");
+                  setHowEnter("");
                 }}
               ></div>
             </div>
@@ -381,7 +387,7 @@ function HeaderUser() {
         </div>
       </nav>
 
-      <div className="header__add-wrap position-relative">
+      <div className={`header__add-wrap position-relative ${props.path === "/" ? "d-none" : ""}`}>
         <div className="header__add">
           <div className={lang === "ru" ? "header__add-name" : "header__add-name_ukr"}></div>
         </div>
@@ -391,7 +397,14 @@ function HeaderUser() {
 
       <div className={`userpanel__backfon ${loginpanel ? "userpanel__backfon_active" : ""}`}></div>
       <div className={`userpanel ${loginpanel === "enter" ? "userpanel_active" : ""}`}>
-        <h5 className="">{lang === "ru" ? "Вход в кабинет" : "Вхід до кабінету"}</h5>
+        <h5 className={howEnter === "order" ? "d-none" : ""}>
+          {lang === "ru" ? "Вход в кабинет" : "Вхід до кабінету"}
+        </h5>
+        <p className={`userpanel__inform ${howEnter !== "order" ? "d-none" : ""}`}>
+          {lang === "ru"
+            ? "Для оформления заказа войдите в учетную запись или зарегистрируйтесь"
+            : "Для оформлення замовлення увійдіть до облікового запису або зареєструйтесь"}
+        </p>
         <hr />
         <form ref={formenter}>
           <div className="userpanel__inpblock">
@@ -566,7 +579,7 @@ function HeaderUser() {
             onClick={() => {
               setLoginpanel("enter");
               setUsername("");
-              setUsersurname("");
+              // setUsersurname("");
               setUserphone("");
               setUsermail("");
             }}
@@ -643,8 +656,8 @@ function HeaderUser() {
         <div className="userpanel__inpblock">
           <p className="userpanel__smalltext">
             {lang === "ru"
-              ? "Введите пароль из сообщения отправленного на почту указанную при регистрации"
-              : "Введіть пароль із повідомлення надісланого на пошту, вказану під час реєстрації"}
+              ? 'Введите пароль из сообщения отправленного на почту указанную при регистрации. Письмо с паролем может находиться в папке "спам" в Вашей почте'
+              : 'Введіть пароль із повідомлення надісланого на пошту, вказану під час реєстрації. Лист із паролем може перебувати у папці "спам" у Вашій пошті'}
           </p>
         </div>
         <div className="userpanel__inpblock">
@@ -789,17 +802,18 @@ function HeaderUser() {
           </li>
         </ul>
         <div className="blockdropbut">
-          <Link
-            to="/"
+          <div
             className="but dropmenu__but"
             onClick={() => {
               setBurgstate((x) => !x);
               enableBodyScroll(main.current);
               dispatch({ type: "orderperehod", data: "1" });
+              setHowEnter("order");
+              setLoginpanel("enter");
             }}
           >
             {lang === "ru" ? "Заказать работу" : "Замовити роботу"}
-          </Link>
+          </div>
         </div>
 
         <div className="header__textmin_dropmenu">

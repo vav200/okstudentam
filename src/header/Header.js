@@ -5,13 +5,13 @@ import HeaderUser from "./HeaderUser";
 import HeaderCustomer from "./HeaderCustomer";
 import HeaderDispetcher from "./HeaderDispetcher";
 import Cookies from "js-cookie";
+import { useLocation } from "react-router-dom";
 
 function Header() {
   let stateadmin = useSelector((dat) => dat.adminpanel);
   let userstate = useSelector((dat) => dat.userstate);
   let dispatch = useDispatch();
-  // let state = useSelector((dat) => dat);
-  // console.log(state);
+  let loc = useLocation();
 
   useEffect(() => {
     dispatch({
@@ -32,7 +32,7 @@ function Header() {
   else if (userstate === "customer") return <HeaderCustomer />;
   else if (userstate === "dispetcher") return <HeaderDispetcher />;
   else {
-    return <HeaderUser />;
+    return <HeaderUser path={loc.pathname} />;
   }
 }
 

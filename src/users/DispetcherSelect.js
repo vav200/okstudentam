@@ -2,7 +2,7 @@ import "./personalarea.css";
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { usePageVisibility } from "react-page-visibility";
-// import sendIcon from "./img/sendmess1.png";
+import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 
 function DispetcherSelect() {
   let dispatch = useDispatch();
@@ -17,15 +17,40 @@ function DispetcherSelect() {
   const [message, setMessage] = useState("");
   const [addDopfiles, setAddDopfiles] = useState([]);
   const [switchorderinfo, setSwitchorderinfo] = useState(true);
-  const [nameCustomerFromSelectedOrder, setNameCustomerFromSelectedOrder] = useState();
+  const [CustomerFromSelectedOrder, setCustomerFromSelectedOrder] = useState();
   const [orderPrepayment, setOrderPrepayment] = useState("");
   const [orderCost, setOrderCost] = useState("");
 
   const [changeOrderCost, setChangeOrderCost] = useState(true);
   const [changeOrderPrepayment, setChangeOrderPrepayment] = useState(true);
+  const [confirmDel, setConfirmDel] = useState(false);
+  const [nummestodel, setNummestodel] = useState("");
   const timerIdSelect = useRef(null);
   const isInitialLoad = useRef(true);
   let masMessenges = useRef([]);
+  let main = useRef();
+
+  function delMessage(e) {
+    e.preventDefault();
+    setConfirmDel((x) => !x);
+    enableBodyScroll(main.current);
+    let dataform = new FormData();
+    let correspondenceObject = JSON.parse(selectedOrder.correspondence);
+    correspondenceObject.splice(nummestodel, 1);
+    console.log("index", nummestodel);
+    console.log(correspondenceObject);
+    dataform.append("orderNumber", selectedOrder.numorder);
+    dataform.append("correspondence", JSON.stringify(correspondenceObject));
+    let url = domen + "/users/delMessageInCorrespondence.php";
+    fetch(url, {
+      method: "POST",
+      body: dataform,
+    })
+      .then((data) => data.text())
+      .then((data) => {
+        // console.log(data);
+      });
+  }
 
   function getLinkFromText(txt) {
     let incomingtext = txt;
@@ -37,12 +62,20 @@ function DispetcherSelect() {
         return (
           <a key={index} href={part} target="_blank" rel="noopener noreferrer">
             {/* {part} */}
-            link
+            {lang === "ru" ? "ссылка" : "посилання"}
           </a>
         );
       } else {
         // Это обычный текст, вставляем его без изменений
-        return <span key={index}>{part} </span>;
+        // return <span key={index}>{part} </span>;
+        return (
+          <span
+            key={index}
+            dangerouslySetInnerHTML={{
+              __html: part.replace(/\n/g, "<br />"),
+            }}
+          />
+        );
       }
     });
     return textWithLinks;
@@ -55,7 +88,11 @@ function DispetcherSelect() {
     let textWithLinks = parts.map((part, index) => {
       if (urlRegex.test(part)) {
         // Это ссылка, вставляем ее в тег <a>
-        return `<a key=${index} href=${part} target="_blank" rel="noopener noreferrer">link</a>`;
+        if (lang === "ru") {
+          return `<a key=${index} href=${part} target="_blank" rel="noopener noreferrer">ссылка</a>`;
+        } else {
+          return `<a key=${index} href=${part} target="_blank" rel="noopener noreferrer">посилання</a>`;
+        }
       } else {
         // Это обычный текст, вставляем его без изменений
         return `<span key=${index}>${part}</span>`;
@@ -116,6 +153,7 @@ function DispetcherSelect() {
               href={`${domen}/users/${item.path}`}
               download
               target="_blank"
+              rel="noopener noreferrer"
             >
               {item.name}
             </a>
@@ -137,6 +175,7 @@ function DispetcherSelect() {
               href={`${domen}/users/${item.path}`}
               download
               target="_blank"
+              rel="noopener noreferrer"
             >
               {item.name}
             </a>
@@ -154,35 +193,92 @@ function DispetcherSelect() {
       return correspondenceObject.map((item, ind) => {
         return (
           <li
-            className={item.status === "author" ? "message__customer" : "message__author"}
             key={"corr" + ind}
+            // className={`justify-content-end ${item.status === "author" ? "" : "flex-row-reverse"}`}
+            className={item.status === "author" ? "message__author" : "message__customer"}
           >
-            <div className="order__chatnames">
-              {item.status === "customer" ? nameCustomerFromSelectedOrder + ":" : "OKstudentam:"}
-            </div>
-            <div
-              dangerouslySetInnerHTML={{
-                __html: getLinkFromTextChat(item.text),
-              }}
-            />
-            {item.hasOwnProperty("files") && (
-              <ul className="order__filesInChat">
-                {item.files.map((el, i) => (
-                  <li key={i}>
-                    <a
-                      className="order__linkChat"
-                      href={`${domen}/users/${el.path}`}
-                      download
-                      target="_blank"
-                    >
-                      {el.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <div className={`boxmessage `}>
+              <div className="order__chatnames">
+                <span>
+                  {item.status === "customer"
+                    ? CustomerFromSelectedOrder && CustomerFromSelectedOrder.username + ":"
+                    : "OKstudentam:"}
+                </span>
+                {/* ---------------znak del--------------- */}
+                <div
+                  className={`butForDel`}
+                  onClick={() => {
+                    setConfirmDel((x) => !x);
+                    disableBodyScroll(main.current);
+                    setNummestodel(ind);
+                  }}
+                >
+                  <div
+                    className={`${
+                      item.status === "author" ? "butForDel__line_green" : "butForDel__line_grey"
+                    } butForDel__firstline`}
+                  ></div>
+                  <div
+                    className={`${
+                      item.status === "author" ? "butForDel__line_green" : "butForDel__line_grey"
+                    } butForDel__secondline`}
+                  ></div>
+                </div>
+                {/* --------------------------------------- */}
+              </div>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: getLinkFromTextChat(item.text),
+                }}
+              />
+              {item.hasOwnProperty("files") && (
+                <ul className="order__filesInChat">
+                  {item.files.map((el, i) => (
+                    <li key={i}>
+                      <a
+                        className="order__linkChat"
+                        href={`${domen}/users/${el.path}`}
+                        download
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {el.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
 
-            <p className="message__datatime">{item.date}</p>
+              <p className="message__datatime">{item.date}</p>
+            </div>
+
+            {/* ---------Подтверждение удаления сообщения--------- */}
+            <div className={`confimMess ${confirmDel ? "confimMess_active" : ""}`}>
+              <h5>
+                {lang === "ru"
+                  ? "Подтвердите удаление сообщения в чате"
+                  : "Підтвердіть видалення повідомлення у чаті"}
+              </h5>
+              <hr />
+              <div className="confimMess__buttonBox mt-4">
+                <input
+                  type="submit"
+                  value={lang === "ru" ? "Да" : "Так"}
+                  className="but but_orange"
+                  onClick={(e) => delMessage(e)}
+                />
+                <input
+                  type="submit"
+                  value={lang === "ru" ? "Нет" : "Ні"}
+                  className="but order__but ms-4 mt-0"
+                  onClick={() => {
+                    setConfirmDel((x) => !x);
+                    enableBodyScroll(main.current);
+                  }}
+                />
+              </div>
+            </div>
+            {/* ------------------------------------------------- */}
           </li>
         );
       });
@@ -252,7 +348,7 @@ function DispetcherSelect() {
       })
         .then((data) => data.text())
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           setMessage("");
           setAddDopfiles([]);
         });
@@ -311,10 +407,62 @@ function DispetcherSelect() {
     } else {
       scrollToTop();
     }
-  }, [isInitialLoad.current, masMessenges.current.length]);
+  }, [isInitialLoad, masMessenges.current.length]);
 
   useEffect(() => {
     let url = domen + "/users/getSelectedOrderByDispetcher.php";
+    function getCustomerBySelectedOrder(data) {
+      let url = domen + "/users/getCustomerBySelectedOrder.php";
+
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "content-type": "application/x-www-form-urlencoded",
+        },
+        body: "&usermail=" + data.email,
+      })
+        .then((data) => {
+          if (!data.ok) {
+            throw new Error(`Network response was not ok, status: ${data.status}`);
+          }
+          return data.json();
+        })
+        .then((data) => {
+          if (data) {
+            console.log(data);
+            setCustomerFromSelectedOrder(data);
+          }
+        });
+    }
+    function dataFetchFirst() {
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "content-type": "application/x-www-form-urlencoded",
+        },
+        body: "&orderNumber=" + selectedOrderNum,
+      })
+        .then((data) => {
+          if (!data.ok) {
+            throw new Error(`Network response was not ok, status: ${data.status}`);
+          }
+          return data.json();
+        })
+        .then((data) => {
+          getCustomerBySelectedOrder(data);
+          if (isInitialLoad.current) {
+            isInitialLoad.current = false;
+          }
+          if (data) {
+            if (data.correspondence) {
+              masMessenges.current = JSON.parse(data.correspondence);
+            }
+            console.log(data);
+            console.log(isVisiblSelectOrder);
+            setSelectedOrder(data);
+          }
+        });
+    }
     function dataFetch() {
       fetch(url, {
         method: "POST",
@@ -345,7 +493,7 @@ function DispetcherSelect() {
     }
 
     if (isVisiblSelectOrder) {
-      dataFetch();
+      dataFetchFirst();
       timerIdSelect.current = setInterval(dataFetch, 3000);
     } else {
       clearInterval(timerIdSelect.current);
@@ -356,35 +504,14 @@ function DispetcherSelect() {
     };
   }, [isVisiblSelectOrder]);
 
-  function getName() {
-    let url = domen + "/users/getNameCustomerBySelectedOrder.php";
-    if (selectedOrder) {
-      fetch(url, {
-        method: "POST",
-        headers: {
-          "content-type": "application/x-www-form-urlencoded",
-        },
-        body: "&usermail=" + selectedOrder.email,
-      })
-        .then((data) => {
-          if (!data.ok) {
-            throw new Error(`Network response was not ok, status: ${data.status}`);
-          }
-          return data.text();
-        })
-        .then((data) => {
-          if (data) {
-            setNameCustomerFromSelectedOrder(data);
-          }
-        });
-    }
-  }
-
   return (
-    <div>
+    <div ref={main}>
       {selectedOrder ? (
         <>
-          {getName()}
+          {/* {getCustomerBySelectedOrder()} */}
+          <div
+            className={`confimMess__backfon ${confirmDel ? "confimMess__backfon_active" : ""}`}
+          ></div>
           <div className="orders__list_dispetcher">
             <h4 className="mb-3 selectedOrder d-flex">
               <span
@@ -402,19 +529,28 @@ function DispetcherSelect() {
             </h4>
 
             <div className="order__switches">
-              <div className="order__switch switch1" onClick={() => setSwitchorderinfo(1)}>
-                {lang === "ru" ? "Инфо" : "Інфо"}
+              <div className="order__switch switch1__header" onClick={() => setSwitchorderinfo(1)}>
+                {/* {lang === "ru" ? "Инфо" : "Інфо"} */}
               </div>
-              <div className="order__switch switch2" onClick={() => setSwitchorderinfo(2)}>
-                {lang === "ru" ? "Файлы заказчика" : "Файли замовника"}
+              <div className="order__switch switch2__header" onClick={() => setSwitchorderinfo(2)}>
+                {/* {lang === "ru" ? "Файлы заказчика" : "Файли замовника"} */}
               </div>
-              <div className="order__switch switch3" onClick={() => setSwitchorderinfo(3)}>
-                {lang === "ru" ? "Файлы автора" : "Файли автора"}
+              <div className="order__switch switch3__header" onClick={() => setSwitchorderinfo(3)}>
+                {/* {lang === "ru" ? "Файлы автора" : "Файли автора"} */}
+              </div>
+              <div className="order__switch switch4__header" onClick={() => setSwitchorderinfo(4)}>
+                {/* {lang === "ru" ? "Контакти" : "Контакти"} */}
               </div>
             </div>
             <div
               className={`order__box ${
-                switchorderinfo == 1 ? "switch1" : switchorderinfo == 2 ? "switch2" : "switch3"
+                switchorderinfo == 1
+                  ? "switch1"
+                  : switchorderinfo == 2
+                  ? "switch2"
+                  : switchorderinfo == 3
+                  ? "switch3"
+                  : "switch4"
               }`}
             >
               <ul
@@ -523,26 +659,37 @@ function DispetcherSelect() {
                   </div>
                 </li>
               </ul>
-              <div className="twoColumns">
-                <ul
-                  className={`orders__list-secondlvl ${
-                    switchorderinfo == 2 ? "d-block" : "d-none"
-                  }`}
-                >
-                  {showCustomerFiles()}
-                </ul>
-              </div>
-              <div className="twoColumns">
-                <ul
-                  className={`orders__list-secondlvl ${
-                    switchorderinfo == 3 ? "d-block" : "d-none"
-                  }`}
-                >
-                  {showAuthorFiles()}
-                </ul>
-              </div>
+
+              <ul
+                className={`orders__list-secondlvl ${switchorderinfo == 2 ? "d-block" : "d-none"}`}
+              >
+                {showCustomerFiles()}
+              </ul>
+
+              <ul
+                className={`orders__list-secondlvl ${switchorderinfo == 3 ? "d-block" : "d-none"}`}
+              >
+                {showAuthorFiles()}
+              </ul>
+              <ul
+                className={`orders__list-secondlvl ${switchorderinfo == 4 ? "d-block" : "d-none"}`}
+              >
+                <li>
+                  {lang === "ru" ? "Имя: " : "Ім'я: "}
+                  {CustomerFromSelectedOrder ? CustomerFromSelectedOrder.username : ""}
+                </li>
+                <li>
+                  {lang === "ru" ? "e-mail: " : "e-mail: "}
+                  {CustomerFromSelectedOrder ? CustomerFromSelectedOrder.usermail : ""}
+                </li>
+                <li>
+                  {lang === "ru" ? "Телефон: " : "Телефон: "}
+                  {CustomerFromSelectedOrder ? CustomerFromSelectedOrder.userphone : ""}
+                </li>
+              </ul>
             </div>
           </div>
+
           <ul className="order__correspondencebox_dispetcher">{showCorrespondence()}</ul>
 
           <div className="sendMessform">

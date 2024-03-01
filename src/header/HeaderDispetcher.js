@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import "./header.css";
-import { Link, NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import { useNavigate } from "react-router-dom";
@@ -9,16 +8,61 @@ import Cookies from "js-cookie";
 
 function HeaderDispetcher() {
   let nav = useNavigate();
-  let lang = useSelector((dat) => dat.language);
-  let dispetcher_list = useSelector((dat) => dat.dispetcher_list);
   let dispatch = useDispatch();
-  const [burgstate, setBurgstate] = useState(false);
-  let main = React.createRef();
-  let secondlvl = React.createRef();
-  const [secondlvlmenustate, setSecondlvlmenustate] = useState(false);
-  const [scrollpos, setScrollpos] = useState();
+  let statenow = useSelector((dat) => dat);
+  let domen = useSelector((dat) => dat.domen);
+  let lang = useSelector((dat) => dat.language);
+  let usermail = useSelector((dat) => dat.usermail);
+  let mesAboutNewMessageInChat = useSelector((dat) => dat.mesAboutNewMessageInChat);
+  let mesAboutNewOrder = useSelector((dat) => dat.mesAboutNewOrder);
+  let dispetcher_list = useSelector((dat) => dat.dispetcher_list);
+  console.log("HeaderDispetcher", statenow);
 
-  useEffect(() => enableBodyScroll(main.current));
+  const [burgstate, setBurgstate] = useState(false);
+  const [visibleSettings, setVisibleSettings] = useState(false);
+  let main = React.createRef();
+  let formForSettings = useRef();
+
+  function sendSettings() {
+    let dataform = new FormData();
+    dataform.append("email", usermail);
+    dataform.append("mesAboutNewOrder", mesAboutNewOrder);
+    dataform.append("mesAboutNewMessageInChat", mesAboutNewMessageInChat);
+    dataform.append("userLanguage", lang);
+    let url = domen + "/users/sendSettings.php";
+    fetch(url, {
+      method: "POST",
+      body: dataform,
+    });
+  }
+
+  function userOut() {
+    dispatch({
+      type: "USERDATA",
+      data: { username: "", userstate: "", usermail: "" },
+    });
+    dispatch({
+      type: "SELECTEDORDERNUM",
+      data: "",
+    });
+    dispatch({ type: "SETDISPETCHERLIST", data: "" });
+    // Удаление куки для каждого параметра входа
+    Cookies.remove("usermail");
+    Cookies.remove("username");
+    Cookies.remove("userstate");
+    Cookies.remove("dispetcher_list");
+
+    let url = domen + "/users/userOut.php";
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+      },
+      body: "&usermail=" + usermail,
+    });
+  }
+
+  useEffect(() => enableBodyScroll(main.current), []);
 
   return (
     <header className="headerDipetcher position-relative" ref={main}>
@@ -64,6 +108,7 @@ function HeaderDispetcher() {
                 onClick={() => {
                   dispatch({ type: "SELECTEDORDERNUM", data: "" });
                   dispatch({ type: "SETDISPETCHERLIST", data: "forEvaluation" });
+                  nav("/personalarea");
                 }}
               >
                 {lang === "ru" ? "Аукцион" : "Аукціон"}
@@ -75,6 +120,7 @@ function HeaderDispetcher() {
                 onClick={() => {
                   dispatch({ type: "SELECTEDORDERNUM", data: "" });
                   dispatch({ type: "SETDISPETCHERLIST", data: "waitingPayment" });
+                  nav("/personalarea");
                 }}
               >
                 {lang === "ru" ? "Ожидают оплаты" : "Чекають на оплату"}
@@ -86,6 +132,7 @@ function HeaderDispetcher() {
                 onClick={() => {
                   dispatch({ type: "SELECTEDORDERNUM", data: "" });
                   dispatch({ type: "SETDISPETCHERLIST", data: "atWork" });
+                  nav("/personalarea");
                 }}
               >
                 {lang === "ru" ? "В работе" : "В роботі"}
@@ -97,6 +144,7 @@ function HeaderDispetcher() {
                 onClick={() => {
                   dispatch({ type: "SELECTEDORDERNUM", data: "" });
                   dispatch({ type: "SETDISPETCHERLIST", data: "onGuarantee" });
+                  nav("/personalarea");
                 }}
               >
                 {lang === "ru" ? "На гарантии" : "На гарантії"}
@@ -108,48 +156,105 @@ function HeaderDispetcher() {
                 onClick={() => {
                   dispatch({ type: "SELECTEDORDERNUM", data: "" });
                   dispatch({ type: "SETDISPETCHERLIST", data: "done" });
+                  nav("/personalarea");
                 }}
               >
                 {lang === "ru" ? "Выполненные" : "Виконані"}
               </li>
             </ul>
             <div className="langpanel">
-              <div className="switch">
-                <input
-                  type="checkbox"
-                  className="switch__box"
-                  onChange={() => {
-                    lang === "ru"
-                      ? dispatch({ type: "SETLANGUAGE", data: "ua" })
-                      : dispatch({ type: "SETLANGUAGE", data: "ru" });
-                    dispatch({ type: "orderperehodnull", data: "" });
-                  }}
-                  checked={lang === "ru" ? false : true}
-                />
-              </div>
+              <div
+                className={`finishedWorks ${
+                  dispetcher_list === "finishedWorks" ? "finishedWorks_active" : ""
+                }`}
+                onClick={() => {
+                  // dispatch({ type: "FINISHEDWORKS", data: "on" });
+                  dispatch({ type: "SETDISPETCHERLIST", data: "finishedWorks" });
+                  nav("/personalarea/finishedWorks");
+                }}
+              ></div>
+
+              <div
+                className={`settings ${visibleSettings ? "settings_active" : ""}`}
+                onClick={() => {
+                  setVisibleSettings((x) => !x);
+                  sendSettings();
+                }}
+              ></div>
 
               <div
                 className="userexit"
                 onClick={() => {
                   nav("/");
-                  dispatch({
-                    type: "USERDATA",
-                    data: { username: "", userstate: "", usermail: "" },
-                  });
-                  dispatch({
-                    type: "SELECTEDORDERNUM",
-                    data: "",
-                  });
-                  dispatch({ type: "SETDISPETCHERLIST", data: "" });
-                  // Удаление куки для каждого параметра входа
-                  Cookies.remove("usermail");
-                  Cookies.remove("username");
-                  Cookies.remove("userstate");
-                  Cookies.remove("dispetcher_list");
+                  userOut();
                 }}
               ></div>
             </div>
           </div>
+          {/* --------------settings------------------ */}
+          <div className={visibleSettings ? "settingsPanel" : "settingsPanelHide"}>
+            <form ref={formForSettings}>
+              <ul className="settingsPanel__list">
+                <li className="settingsPanel__list-item">
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="mesAboutNewOrder"
+                      onChange={() => {
+                        mesAboutNewOrder === "off"
+                          ? dispatch({ type: "SETMESABOUTNEWORDER", data: "on" })
+                          : dispatch({ type: "SETMESABOUTNEWORDER", data: "off" });
+                      }}
+                      checked={mesAboutNewOrder === "on"}
+                    />
+                    <span className="settingsPanel__item-name">
+                      {lang === "ru"
+                        ? "- получать на почту сообщения о новых заказах"
+                        : "- отримувати на пошту повідомлення про нові замовлення"}
+                    </span>
+                  </label>
+                </li>
+                <li className="settingsPanel__list-item">
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="mesAboutNewMessageInChat"
+                      onChange={() => {
+                        mesAboutNewMessageInChat === "off"
+                          ? dispatch({ type: "SETMESABOUTNEWMES", data: "on" })
+                          : dispatch({ type: "SETMESABOUTNEWMES", data: "off" });
+                      }}
+                      checked={mesAboutNewMessageInChat === "on"}
+                    />
+                    <span className="settingsPanel__item-name">
+                      {lang === "ru"
+                        ? "- получать на почту сообщения о новых сообщениях в чате"
+                        : "- отримувати на пошту повідомлення про нові повідомлення в чаті"}
+                    </span>
+                  </label>
+                </li>
+                <li className="settingsPanel__list-item">
+                  <div className="settingsPanel__switchlanguge">
+                    <input
+                      name="userLanguage"
+                      type="checkbox"
+                      className="switch__box"
+                      onChange={() => {
+                        lang === "ru"
+                          ? dispatch({ type: "SETLANGUAGE", data: "ua" })
+                          : dispatch({ type: "SETLANGUAGE", data: "ru" });
+                      }}
+                      checked={lang === "ru" ? false : true}
+                    />
+                    <span className="settingsPanel__item-name">
+                      {lang === "ru" ? "- язык интерфейса" : "- мова інтерфейсу"}
+                    </span>
+                  </div>
+                </li>
+              </ul>
+            </form>
+          </div>
+          {/* ---------------------------------------- */}
         </div>
       </nav>
 

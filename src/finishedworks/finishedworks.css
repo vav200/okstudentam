@@ -101,6 +101,8 @@
   box-shadow: 0px 5px 3px rgb(195, 194, 194);
   transition: 0.1s background-color linear;
   text-decoration: none;
+  text-align: center;
+  text-indent: 0;
 }
 .downloadbut:hover {
   background: #7ef580;
@@ -139,6 +141,33 @@
 }
 .listpages__item_disabled {
   visibility: hidden;
+}
+.paginat {
+  text-align: center;
+  margin-top: 50px;
+}
+.paginat li {
+  list-style: none;
+  display: inline-block;
+  padding: 0 8px;
+  font-weight: 500;
+  color: #acabab;
+}
+.paginat li:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  color: grey;
+}
+li.paginat_liactive {
+  text-decoration: underline;
+  font-weight: 500;
+  color: grey;
+}
+.buttonsblock {
+  display: flex;
+  margin-top: 30px;
+  column-gap: 30px;
+  margin-bottom: 20px;
 }
 
 @media screen and (max-width: 1000px) {

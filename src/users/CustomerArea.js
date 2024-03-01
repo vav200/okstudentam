@@ -1,7 +1,6 @@
 import "./personalarea.css";
-import { Slide, Zoom, Fade } from "react-awesome-reveal";
 import { useDispatch, useSelector } from "react-redux";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import Cookies from "js-cookie";
 import CustomerSelect from "./CustomerSelect";
@@ -68,9 +67,15 @@ function CustomerArea() {
       if (numstr === "" || numstr === "err") setNumstr("err");
     } else {
       dataform.append("email", usermail);
+      if (!addfiles) {
+        // Устанавливаем значение для ключа "addfiles[]" в пустой массив
+        dataform.set("addfiles[]", []);
+      }
+
       for (let key of dataform.keys()) {
         console.log(`${key}: ${dataform.get(key)}`);
       }
+
       disableBodyScroll(main.current);
       let url = domen + "/users/sendOrder.php";
       fetch(url, {
@@ -112,6 +117,23 @@ function CustomerArea() {
     Cookies.set("userstate", userstate);
     let dispetcherListValue = dispetcher_list ? dispetcher_list : "forEvaluation";
     Cookies.set("dispetcher_list", dispetcherListValue);
+    let dataform = new FormData();
+    let url = domen + "/users/getUsersettings.php";
+    dataform.append("usermail", usermail);
+    fetch(url, {
+      method: "POST",
+      body: dataform,
+    })
+      .then((data) => {
+        if (!data.ok) {
+          throw new Error(`Network response was not ok, status: ${data.status}`);
+        }
+        return data.json();
+      })
+      .then((data) => {
+        console.log("data", data);
+        dispatch({ type: "USERSETTINGS", data: data });
+      });
   }, []);
 
   return (

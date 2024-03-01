@@ -259,7 +259,7 @@
   left: 0;
   right: 0;
   top: 0;
-  z-index: 5;
+  z-index: 50;
 }
 .header__nav-wrap {
   display: flex;
@@ -267,6 +267,7 @@
   max-width: 980px;
   height: 100%;
   margin: 0 auto;
+  position: relative;
 }
 .header__nav-wrap-admin {
   display: flex;
@@ -372,6 +373,7 @@
   text-decoration: none;  
 } */
 .langpanel {
+  margin-top: 5px;
   display: inline-block;
   padding-right: 10px;
 }
@@ -430,7 +432,7 @@
   bottom: 0;
   background: gray;
   opacity: 0.5;
-  z-index: 6;
+  z-index: 60;
 }
 .burg__backfon_active {
   display: block;
@@ -476,7 +478,7 @@
   left: 0;
   transform: translateX(-100%);
   opacity: 1;
-  z-index: 10;
+  z-index: 65;
   transition: transform 0.5s ease-out;
 }
 .header__drop-menu.header__drop-menu_active {
@@ -608,16 +610,46 @@
   display: inline-block;
   height: 24px;
   width: 24px;
-  background: url(./img/exit1.gif) no-repeat right bottom;
+  background: url(./img/exit1_1.gif) no-repeat right center;
   background-size: 24px 22px;
   margin-left: 20px;
   cursor: pointer;
   transition: all 0.2s;
 }
 .userexit:hover {
-  background: url(./img/exit3.gif) no-repeat right bottom;
+  background: url(./img/exit1_2.gif) no-repeat right center;
   background-size: 24px 22px;
-  color: #808080;
+  /* color: #808080; */
+}
+.settings {
+  display: inline-block;
+  height: 24px;
+  width: 24px;
+  background: url(./img/settings3.png) no-repeat center center;
+  background-size: 24px 24px;
+  margin-left: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.settings:hover,
+.settings_active {
+  background: url(./img/settings3_2.png) no-repeat center center;
+  background-size: 24px 24px;
+}
+.finishedWorks {
+  display: inline-block;
+  height: 24px;
+  width: 24px;
+  background: url(./img/fw2.png) no-repeat center center;
+  background-size: 24px 24px;
+  margin-left: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.finishedWorks:hover,
+.finishedWorks_active {
+  background: url(./img/fw2_2.png) no-repeat center center;
+  background-size: 24px 24px;
 }
 
 /* -----------------USERPANEL------------------ */
@@ -633,7 +665,7 @@
   position: fixed;
   display: none;
   transition: opacity 0.5s ease-out;
-  z-index: 6;
+  z-index: 60;
   width: 300px;
 }
 .userpanel_active {
@@ -648,7 +680,7 @@
   bottom: 0;
   background: darkslategrey;
   opacity: 0.8;
-  z-index: 5;
+  z-index: 50;
 }
 .userpanel__backfon_active {
   display: block;
@@ -660,6 +692,11 @@
 }
 .userpanel__text {
   font-size: 0.85rem;
+}
+.userpanel__inform {
+  max-width: 200px;
+  font-weight: 500;
+  font-size: 1.1rem;
 }
 .userpanel__inpblock {
   margin: 0 0 10px 0;
@@ -713,6 +750,80 @@
 }
 .userpanel__errormess_active {
   display: block;
+}
+.settingsPanel {
+  position: absolute;
+  width: 290px;
+  right: 2px;
+  top: 50px;
+  background-color: white;
+  padding: 10px 17px 10px 17px;
+  z-index: 12;
+  box-shadow: 3px 3px 13px #acabab;
+  opacity: 1;
+  /* transform: scale(100%); */
+  transition: opacity 0.25s ease-in-out;
+}
+
+.settingsPanelHide {
+  position: absolute;
+  width: 290px;
+  right: 2px;
+  top: 50px;
+  background-color: white;
+  padding: 10px 17px 10px 17px;
+  z-index: 12;
+  box-shadow: 3px 3px 13px #acabab;
+  opacity: 0;
+  /* transform: scaleY(0%); */
+  pointer-events: none;
+  transition: opacity 0.25s ease-in-out;
+}
+.settingsPanel_customer {
+  position: absolute;
+  width: 290px;
+  right: 2px;
+  top: 127px;
+  background-color: white;
+  padding: 10px 17px 10px 17px;
+  z-index: 12;
+  box-shadow: 3px 3px 13px #acabab;
+  /* transform: scale(100%); */
+  opacity: 1;
+  transition: opacity 0.25s ease-in-out;
+}
+.settingsPanelHide_customer {
+  position: absolute;
+  width: 290px;
+  right: 2px;
+  top: 127px;
+  background-color: white;
+  padding: 10px 17px 10px 17px;
+  z-index: 12;
+  box-shadow: 3px 3px 13px #acabab;
+  /* transform: scale(0%); */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease-in-out;
+}
+.settingsPanel__list {
+  padding: 0;
+  margin: 0;
+}
+.settingsPanel__list-item {
+  list-style: none;
+  margin-top: 5px;
+}
+.settingsPanel__list-item:last-child {
+  margin-top: 8px;
+}
+.settingsPanel__item-name {
+  padding-left: 8px;
+  padding-right: 7px;
+}
+.settingsPanel__switchlanguge {
+  display: flex;
+  align-items: center;
 }
 
 /* ------------------MEDIA------------------------ */

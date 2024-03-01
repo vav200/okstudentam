@@ -1,10 +1,11 @@
 import "./finishedworks.css";
-import { finishedworks } from "./baseworks";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useState } from "react";
+import Cookies from "js-cookie";
 
 export default function Searchpanel() {
+  let works = useSelector((dat) => dat.finishedWorksList);
   const [serchout, setSerchout] = useState([]);
   const [mouseonlink, setMouseonlink] = useState(false);
   const [inpactive, setInpactive] = useState(false);
@@ -16,9 +17,9 @@ export default function Searchpanel() {
 
   function serchName(e) {
     let searchname = e.target.value.trim().toLowerCase();
-    finishedworks.forEach((item, ind) => {
+    works.forEach((item, ind) => {
       if (searchname != "") {
-        if (item.name.toLowerCase().includes(searchname)) {
+        if (item.namework.toLowerCase().includes(searchname)) {
           if (!serchout.includes(ind)) {
             setSerchout((d) => [...d, ind]);
           }
@@ -47,28 +48,30 @@ export default function Searchpanel() {
         onBlur={blurinput}
       />
       <ul className={`outserchnames ${serchout.length > 0 ? "outserchnames_active" : ""}`}>
-        {finishedworks.map((item, ind) => {
-          if (serchout.includes(ind) && countstrok < numstroksearch) {
-            countstrok++;
-            return (
-              <li className="outserchnames__item">
-                <Link
-                  className="searchlink"
-                  to={`/finishedworks/${item.key}`}
-                  onClick={() => {
-                    dispatch({ type: "KEYFREEWORK", data: [item.key, ind] });
-                    inp.current.value = "";
-                    setSerchout([]);
-                  }}
-                  onMouseOver={() => setMouseonlink(true)}
-                  onMouseLeave={() => setMouseonlink(false)}
-                >
-                  {item.name}
-                </Link>
-              </li>
-            );
-          }
-        })}
+        {works &&
+          works.map((item, ind) => {
+            if (serchout.includes(ind) && countstrok < numstroksearch) {
+              countstrok++;
+              return (
+                <li className="outserchnames__item">
+                  <Link
+                    className="searchlink"
+                    to={`/finishedworks/${item.keywork}`}
+                    onClick={() => {
+                      dispatch({ type: "KEYFREEWORK", data: [item.keywork, ind] });
+                      Cookies.set("keySelectedWork", item.keywork);
+                      inp.current.value = "";
+                      setSerchout([]);
+                    }}
+                    onMouseOver={() => setMouseonlink(true)}
+                    onMouseLeave={() => setMouseonlink(false)}
+                  >
+                    {item.namework}
+                  </Link>
+                </li>
+              );
+            }
+          })}
       </ul>
     </div>
   );

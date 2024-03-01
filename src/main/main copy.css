@@ -8,7 +8,6 @@
 .labelfirstform {
   display: inline-block;
   width: 265px;
-  font-size: 1.1rem;
 }
 .labelsecondform {
   display: inline-block;
@@ -30,7 +29,7 @@
 .inpfirstform {
   width: 200px;
   border: 1px solid rgb(202, 202, 202);
-  font-size: 1rem;
+  font-size: 0.8rem;
   border-radius: 5px;
   padding: 3px 10px;
   outline: none;
@@ -70,8 +69,8 @@
 }
 
 .form {
-  border-radius: 50px;
-  padding: 30px 20px 2px 50px;
+  border-radius: 10px;
+  padding: 30px 20px 2px 20px;
   background-color: #f4f4f4;
   border: 1px solid #e4e3e3;
 }
@@ -413,35 +412,33 @@
 }
 .about {
   margin: 30px 0 0 0;
-  height: 780px;
+  height: 740px;
 }
 .about__title {
   margin: 0 0 0 100px;
   font-weight: 500;
-  font-size: 3.1rem;
+  font-size: 3.5rem;
 }
 .about__list {
   margin: 10px 0 0 90px;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
 }
 .about__list-item {
-  padding-bottom: 5px;
+  padding-bottom: 7px;
 }
 .about__paragraf {
-  margin: 0 0 0 100px;
+  margin: 5px 0 0 100px;
   padding: 0;
   font-size: 2.4rem;
   font-weight: 500;
 }
 .about__message {
   display: inline-block;
-  margin: 80px 0 0 350px;
+  margin: 80px 0 0 150px;
   text-align: center;
   background: url(./img/arrow_main.gif) no-repeat center bottom;
   background-size: 200px 100px;
-  padding-bottom: 130px;
-  font-size: 2.3rem;
-  transform: translateX(-50%);
+  padding-bottom: 120px;
 }
 .about__message-highlight {
   font-weight: 700;
@@ -524,226 +521,15 @@
   }
 }
 
-@media screen and (max-width: 995px) {
-  .round9 {
-    right: 270px;
-  }
-  .round10 {
-    right: 240px;
-  }
-}
-@media screen and (max-width: 960px) {
-  :root {
-    --basewidth1: 300px;
-    --basewidth2: 150px;
-    --basewidth3: 130px;
-    --basewidth4: 110px;
-    --basewidth5: 35px;
-    --basewidth6: 20px;
-    --basewidth7: 50px;
-    --basewidth8: 60px;
-  }
-  .round2 {
-    top: 390px;
-    right: 20px;
-  }
-  .round4 {
-    top: 380px;
-    right: 200px;
-  }
-  .about__add {
-    font-size: 1.7rem;
-  }
-}
-@media screen and (max-width: 920px) {
-  .about__list {
-    margin: 10px 0 0 60px;
-    font-size: 1.3rem;
-  }
-  .about__list-item {
-    padding-bottom: 7px;
-  }
-  .about__paragraf {
-    margin: 0 0 0 70px;
-    padding: 0;
-    font-size: 2.4rem;
-    font-weight: 500;
-  }
-  .about__title {
-    margin: 0 0 0 70px;
-    font-weight: 500;
-    font-size: 3rem;
-  }
-  .about__message {
-    font-size: 2.1rem;
-    margin: 110px 0 0 330px;
-  }
-  .round9 {
-    right: 230px;
-  }
-  .round10 {
-    right: 200px;
-  }
-}
-@media screen and (max-width: 855px) {
-  .roundleft1 {
-    display: none;
-  }
-  .roundleft2 {
-    display: none;
-  }
-  .roundleft3 {
-    display: none;
-  }
-  .roundleft4 {
-    display: none;
-  }
-  .roundleft5 {
-    display: none;
-  }
-  .roundleft6 {
-    display: none;
-  }
-  .about__list {
-    margin: 10px 0 0 0px;
-    font-size: 1.3rem;
-  }
-  .about__list-item {
-    padding-bottom: 7px;
-  }
-  .about__paragraf {
-    margin: 0 0 0 10px;
-    padding: 0;
-    font-size: 2.4rem;
-    font-weight: 500;
-  }
-  .about__title {
-    margin: 0 0 0 10px;
-    font-weight: 500;
-    font-size: 3rem;
-  }
-  .about__message {
-    font-size: 2.1rem;
-    margin: 110px 0 0 240px;
-  }
-}
-@media screen and (max-width: 790px) {
-  .about {
-    margin: 30px 0 0 0;
-    height: 820px;
-  }
-  .about__list {
-    margin: 10px 0 0 0px;
-    font-size: 1.2rem;
-    width: 300px;
-  }
-  .about__list-item {
-    padding-bottom: 7px;
-  }
-  .about__paragraf {
-    margin: 0 0 0 10px;
-    padding: 0;
-    font-size: 2.1rem;
-    font-weight: 500;
-  }
-  .about__title {
-    margin: 0 0 0 10px;
-    font-weight: 500;
-    font-size: 2.8rem;
-  }
-  .about__message {
-    display: block;
-    font-size: 1.8rem;
-    margin: 50px auto;
-    padding-bottom: 100px;
-    transform: translateX(0%);
-  }
-  .round10,
-  .round9 {
-    display: none;
-  }
-  .round7 {
-    top: 340px;
-    right: 310px;
-  }
-  .round8 {
-    top: 20px;
-    right: 310px;
-  }
-}
-
 @media screen and (max-width: 800px) {
   .but {
     width: calc(100% - 200px);
-  }
-}
-@media screen and (max-width: 680px) {
-  :root {
-    --basewidth1: 270px;
-    --basewidth2: 120px;
-    --basewidth3: 100px;
-    --basewidth4: 80px;
-    --basewidth5: 25px;
-    --basewidth6: 15px;
-    --basewidth7: 40px;
-    --basewidth8: 50px;
-  }
-  .round2 {
-    top: 370px;
-    right: 20px;
-  }
-  .round3 {
-    top: 40px;
-    right: 150px;
-  }
-  .round4 {
-    top: 360px;
-    right: 180px;
-  }
-  .about__add {
-    font-size: 1.5rem;
-  }
-  .round7 {
-    top: 330px;
-    right: 280px;
-  }
-  .round8 {
-    top: 20px;
-    right: 270px;
   }
 }
 
 @media screen and (max-width: 650px) {
   .but {
     width: calc(100% - 100px);
-  }
-}
-@media screen and (max-width: 630px) {
-  .round1,
-  .round2,
-  .round3,
-  .round4,
-  .round8,
-  .round7 {
-    display: none;
-  }
-  .round5 {
-    top: 0px;
-    right: 0px;
-    transform: scale(60%);
-  }
-  .round6 {
-    top: 75px;
-    right: 10px;
-  }
-  .about__list {
-    margin: 10px 0 0 0px;
-    font-size: 1.2rem;
-    width: 100%;
-  }
-  .about {
-    margin: 30px 0 0 0;
-    height: 650px;
   }
 }
 
@@ -754,91 +540,5 @@
   }
   .but {
     width: calc(100% - 50px);
-  }
-  .about__list {
-    font-size: 1.1rem;
-  }
-  .about__list-item {
-    padding-bottom: 5px;
-  }
-  .about__message {
-    margin: 40px auto;
-    font-size: 1.6rem;
-    padding-bottom: 100px;
-  }
-  .about {
-    margin: 30px 0 0 0;
-    height: 600px;
-  }
-}
-@media screen and (max-width: 400px) {
-  .metka {
-    position: absolute;
-    top: -70px;
-  }
-  .but {
-    width: calc(100% - 50px);
-  }
-  .about__list {
-    font-size: 1.1rem;
-  }
-  .about__list-item {
-    padding-bottom: 5px;
-  }
-  .about__message {
-    margin: 40px auto;
-    font-size: 1.6rem;
-    padding-bottom: 100px;
-  }
-  .about {
-    margin: 25px 0 0 0;
-    height: 630px;
-  }
-  .about__paragraf {
-    margin: 0 0 0 10px;
-    padding: 0;
-    font-size: 1.9rem;
-    font-weight: 500;
-  }
-  .about__title {
-    margin: 0 0 0 10px;
-    font-weight: 500;
-    font-size: 2.5rem;
-  }
-}
-@media screen and (max-width: 370px) {
-  .about {
-    margin: 20px 0 0 0;
-    height: 670px;
-  }
-  .about__paragraf {
-    margin: 0 0 0 10px;
-    padding: 0;
-    font-size: 1.7rem;
-    font-weight: 500;
-  }
-  .about__title {
-    margin: 0 0 0 10px;
-    font-weight: 500;
-    font-size: 2.3rem;
-  }
-  .about__message {
-    font-size: 1.4rem;
-  }
-  .round5,
-  .round6 {
-    display: none;
-  }
-}
-@media screen and (max-width: 345px) {
-  .about {
-    margin: 20px 0 0 0;
-    height: 720px;
-  }
-}
-@media screen and (max-width: 327px) {
-  .about {
-    margin: 20px 0 0 0;
-    height: 740px;
   }
 }

@@ -6,7 +6,7 @@ import { Helmet } from "react-helmet";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Slide, Fade, Zoom } from "react-awesome-reveal";
+import { Fade, Zoom } from "react-awesome-reveal";
 
 function Kontacts() {
   let nav = useNavigate();
