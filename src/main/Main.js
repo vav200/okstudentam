@@ -6,6 +6,7 @@ import CalculatCost from "./state";
 import { Fade, Zoom } from "react-awesome-reveal";
 
 function Main() {
+  document.title = "OKstudentam";
   let lang = useSelector((dat) => dat.language);
   const [themeR, setThemeR] = useState("history");
   const [typeofWorkR, setTypeofWorkR] = useState("referat");

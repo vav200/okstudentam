@@ -1,13 +1,12 @@
 import "./finishedworks.css";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
 
 import { useParams } from "react-router-dom";
 
 function SelectedWork() {
   let lang = useSelector((dat) => dat.language);
-  let dispatch = useDispatch();
   let domen = useSelector((dat) => dat.domen);
   let p = useParams();
 

@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import React, { useState, useEffect, useRef } from "react";
 import { usePageVisibility } from "react-page-visibility";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
-import { Link } from "react-router-dom";
 
 function DispetcherList() {
   let dispatch = useDispatch();
@@ -111,6 +110,7 @@ function DispetcherList() {
       timerIdRef.current = setInterval(dataFetch, 6000);
     } else {
       clearInterval(timerIdRef.current);
+      // timerIdRef.current = setInterval(dataFetch, 120000);
     }
     return () => {
       clearInterval(timerIdRef.current);
@@ -192,27 +192,20 @@ function DispetcherList() {
                   .map((item) => (
                     <li className="orders__item" key={item.numorder}>
                       <div className="orders__box">
-                        <Link
-                          className="orders__box_link"
-                          to={`/personalarea/orders/${item.numorder}`}
+                        <span
+                          className="orders__box_num"
+                          onClick={() => {
+                            dispatch({ type: "SELECTEDORDERNUM", data: item.numorder });
+                          }}
                         >
-                          <span
-                            className="orders__box_num"
-                            // onClick={() => {
-                            //   dispatch({ type: "SELECTEDORDERNUM", data: item.numorder });
-                            // }}
-                          >
-                            {"№" + item.numorder + " "}
-                          </span>
-                          <span
-                            // onClick={() => {
-                            //   dispatch({ type: "SELECTEDORDERNUM", data: item.numorder });
-                            // }}
-                            dangerouslySetInnerHTML={{
-                              __html: item.theme.replace(/\n/g, "<br />"),
-                            }}
-                          />
-                        </Link>
+                          {"№" + item.numorder + " "}
+                        </span>
+                        <span
+                          onClick={() => {
+                            dispatch({ type: "SELECTEDORDERNUM", data: item.numorder });
+                          }}
+                          dangerouslySetInnerHTML={{ __html: item.theme.replace(/\n/g, "<br />") }}
+                        />
                         <span
                           className={`orders__count ${
                             item.countChatFromCustomer == 0 ? "d-none" : ""

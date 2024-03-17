@@ -17,6 +17,7 @@ import Helper from "./helper/Helper";
 import Guarantees from "./guarantees/Guarantees";
 import Kontacts from "./kontacts/Kontacts";
 import Addfreeworks from "./adminpanel/Addfreeworks";
+import SelectedOrder from "./users/SelectedOrder";
 
 function App() {
   let userstate = useSelector((dat) => dat.userstate);
@@ -37,11 +38,20 @@ function App() {
               <Route index element={<ListOfFinishedWorks />} />
               <Route path="/finishedworks/:keywork" element={<SelectedWork />} />
             </Route>
-            <Route path="/personalarea/finishedWorks" element={<AddFinishedWorks />} />
+
             <Route
               path="/personalarea"
               element={userstate !== "" ? <PersonalArea /> : <Navigate to="/personalarea" />}
             />
+            <Route path="/personalarea/finishedWorks" element={<AddFinishedWorks />} />
+
+            {/* <Route
+              path="/personalarea/orders/:selectedOrderNum"
+              element={userstate === "dispetcher" ? <SelectedOrder /> : <Navigate to="/" />}
+            /> */}
+
+            <Route path="/personalarea/orders/:selectedOrderNum" element={<SelectedOrder />} />
+
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>

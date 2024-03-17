@@ -6,16 +6,18 @@ import DispetcherSelect from "./DispetcherSelect";
 import DispetcherList from "./DispetcherList";
 
 function DicpetcherArea() {
-  // let lang = useSelector((dat) => dat.language);
+  let lang = useSelector((dat) => dat.language);
   let dispatch = useDispatch();
   let domen = useSelector((dat) => dat.domen);
   let main = React.createRef();
   let selectedOrderNum = useSelector((dat) => dat.selectedOrderNum);
-  let finishedWorks = useSelector((dat) => dat.finishedWorks);
+  // let finishedWorks = useSelector((dat) => dat.finishedWorks);
   let username = useSelector((dat) => dat.username);
   let usermail = useSelector((dat) => dat.usermail);
   let userstate = useSelector((dat) => dat.userstate);
   let dispetcher_list = useSelector((dat) => dat.dispetcher_list);
+
+  document.title = lang === "ru" ? `Кабинет диспетчера` : `Кабінет диспетчера`;
 
   useEffect(() => {
     // Установка куки для каждого параметра входа
@@ -38,7 +40,7 @@ function DicpetcherArea() {
         return data.json();
       })
       .then((data) => {
-        console.log("data", data);
+        // console.log("data", data);
         dispatch({ type: "USERSETTINGS", data: data });
       });
   }, []);

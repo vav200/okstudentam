@@ -5,6 +5,7 @@ import { Link, NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import { useNavigate } from "react-router-dom";
+// import bcrypt from "bcryptjs";
 
 function HeaderUser(props) {
   let nav = useNavigate();
@@ -19,8 +20,20 @@ function HeaderUser(props) {
   let formrecall = React.createRef();
   let domen = useSelector((dat) => dat.domen);
 
+  // const password = "333";
+
+  // // Генерация соли и хеширование пароля
+  // bcrypt.genSalt(10, (err, salt) => {
+  //   bcrypt.hash(password, salt, (err, hash) => {
+  //     if (err) throw err;
+  //     // Теперь 'hash' содержит хеш пароля
+  //     console.log(hash);
+  //     // Отправка хеша на сервер
+  //     // fetch('/api/register', { method: 'POST', body: { hash } });
+  //   });
+  // });
+
   const [secondlvlmenustate, setSecondlvlmenustate] = useState(false);
-  // const [scrollpos, setScrollpos] = useState();
   const [loginpanel, setLoginpanel] = useState(false);
   const [errormes, setErrormes] = useState("");
   const [login, setLogin] = useState("");
@@ -200,7 +213,7 @@ function HeaderUser(props) {
     if (confirmmail === "" || confirmmail === "err") {
       if (confirmmail === "" || confirmmail === "err") setConfirmmail("err");
     } else {
-      if (userpass === confirmmail) {
+      if (userpass == confirmmail) {
         setConfirmmail("");
 
         let url = domen + "/users/createUser.php";

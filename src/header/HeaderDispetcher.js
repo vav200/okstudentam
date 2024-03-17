@@ -9,19 +9,22 @@ import Cookies from "js-cookie";
 function HeaderDispetcher() {
   let nav = useNavigate();
   let dispatch = useDispatch();
-  let statenow = useSelector((dat) => dat);
+  // let statenow = useSelector((dat) => dat);
   let domen = useSelector((dat) => dat.domen);
   let lang = useSelector((dat) => dat.language);
   let usermail = useSelector((dat) => dat.usermail);
   let mesAboutNewMessageInChat = useSelector((dat) => dat.mesAboutNewMessageInChat);
   let mesAboutNewOrder = useSelector((dat) => dat.mesAboutNewOrder);
   let dispetcher_list = useSelector((dat) => dat.dispetcher_list);
-  console.log("HeaderDispetcher", statenow);
+  // console.log("HeaderDispetcher", statenow);
 
   const [burgstate, setBurgstate] = useState(false);
   const [visibleSettings, setVisibleSettings] = useState(false);
+  const [dataRegUsers, setDataRegUsers] = useState("");
   let main = React.createRef();
   let formForSettings = useRef();
+  let settingsBlock = useRef();
+  let settingsBut = useRef();
 
   function sendSettings() {
     let dataform = new FormData();
@@ -37,6 +40,7 @@ function HeaderDispetcher() {
   }
 
   function userOut() {
+    document.title = "OKstudentam";
     dispatch({
       type: "USERDATA",
       data: { username: "", userstate: "", usermail: "" },
@@ -62,7 +66,40 @@ function HeaderDispetcher() {
     });
   }
 
-  useEffect(() => enableBodyScroll(main.current), []);
+  function getNumberRegisteredUsers() {
+    let url = domen + "/users/getNumberRegisteredUsers.php";
+    fetch(url, {
+      method: "GET",
+    })
+      .then((dat) => dat.json())
+      .then((dat) => {
+        // console.log("число пользователей", dat.numRegUsers);
+        setDataRegUsers(dat);
+      });
+  }
+
+  function hideSettingsBlock(e) {
+    if (
+      settingsBlock.current &&
+      !settingsBlock.current.contains(e.target) &&
+      !settingsBut.current.contains(e.target)
+    ) {
+      // Клик вне окна, закрыть его
+      setVisibleSettings(false);
+    }
+  }
+
+  useEffect(() => {
+    enableBodyScroll(main.current);
+    getNumberRegisteredUsers();
+    // Добавить обработчик события при монтировании компонента
+    document.addEventListener("mousedown", hideSettingsBlock);
+
+    // Удалить обработчик события при размонтировании компонента
+    return () => {
+      document.removeEventListener("mousedown", hideSettingsBlock);
+    };
+  }, []);
 
   return (
     <header className="headerDipetcher position-relative" ref={main}>
@@ -175,6 +212,7 @@ function HeaderDispetcher() {
               ></div>
 
               <div
+                ref={settingsBut}
                 className={`settings ${visibleSettings ? "settings_active" : ""}`}
                 onClick={() => {
                   setVisibleSettings((x) => !x);
@@ -191,8 +229,12 @@ function HeaderDispetcher() {
               ></div>
             </div>
           </div>
+
           {/* --------------settings------------------ */}
-          <div className={visibleSettings ? "settingsPanel" : "settingsPanelHide"}>
+          <div
+            className={visibleSettings ? "settingsPanel" : "settingsPanelHide"}
+            ref={settingsBlock}
+          >
             <form ref={formForSettings}>
               <ul className="settingsPanel__list">
                 <li className="settingsPanel__list-item">
@@ -250,6 +292,12 @@ function HeaderDispetcher() {
                       {lang === "ru" ? "- язык интерфейса" : "- мова інтерфейсу"}
                     </span>
                   </div>
+                </li>
+                <li className="settingsPanel__list-item">
+                  <hr />
+                  всего зарегестрированных пользователей - {dataRegUsers.numRegUsers}
+                  <br />
+                  зарегестрированных пользователей online - {dataRegUsers.numRegUsersOnline}
                 </li>
               </ul>
             </form>

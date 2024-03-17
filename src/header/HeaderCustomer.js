@@ -23,7 +23,7 @@ function HeaderCustomer() {
   let formForSettings = useRef();
   const [secondlvlmenustate, setSecondlvlmenustate] = useState(false);
   const [scrollpos, setScrollpos] = useState();
-  console.log("HeaderCustomer", statenow);
+  // console.log("HeaderCustomer", statenow);
 
   function sendSettings() {
     let dataform = new FormData();

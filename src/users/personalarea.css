@@ -80,6 +80,12 @@
   padding-right: 5px;
   font-size: 1.07rem;
 }
+.orders__box_link {
+  color: #464d54;
+}
+.orders__box_link:hover {
+  color: #000000;
+}
 .orders__count {
   display: inline-block;
   height: 22px;
